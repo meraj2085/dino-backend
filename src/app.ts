@@ -24,7 +24,7 @@ app.get('/', async (req: Request, res: Response) => {
 // Global Error Handler
 app.use(globalErrorHandler);
 
-// Handle not found routes
+// Handle not found routes 
 app.use(handleNotFoundError());
 
 export default app;
