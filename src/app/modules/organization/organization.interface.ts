@@ -53,3 +53,9 @@ export type IOrganization = {
 };
 
 export type OrganizationModel = Model<IOrganization, Record<string, unknown>>;
+
+export type IOrganizationFilters = {
+  searchTerm?: string;
+  id?: string;
+  company_name?: string;
+};

@@ -77,7 +77,7 @@ const OrganizationSchema = new Schema<IOrganization, OrganizationModel>(
   }
 );
 
-export const User = model<IOrganization, OrganizationModel>(
+export const Organization = model<IOrganization, OrganizationModel>(
   'Organization',
   OrganizationSchema
 );

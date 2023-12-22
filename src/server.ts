@@ -37,9 +37,9 @@ async function bootstrap() {
 
 bootstrap();
 
-process.on('SIGTERM', () => {
-  console.info('SIGTERM is received');
-  if (server) {
-    server.close();
-  }
-});
+// process.on('SIGTERM', () => {
+//   console.info('SIGTERM is received');
+//   if (server) {
+//     server.close();
+//   }
+// });
