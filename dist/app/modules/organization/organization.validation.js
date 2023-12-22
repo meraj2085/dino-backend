@@ -1,0 +1,65 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.OrganizationValidation = void 0;
+const zod_1 = require("zod");
+const organizationSchema = zod_1.z.object({
+    bin_number: zod_1.z.string().optional(),
+    nid_number: zod_1.z.string().optional(),
+    tin_number: zod_1.z.string().optional(),
+    email: zod_1.z.string().email().optional(),
+    street: zod_1.z.string().optional(),
+    city: zod_1.z.string().optional(),
+    landmark: zod_1.z.string().optional(),
+    country: zod_1.z.string().optional(),
+    state: zod_1.z.string().optional(),
+    postal_code: zod_1.z.number().optional(),
+    billing_street: zod_1.z.string().optional(),
+    billing_city: zod_1.z.string().optional(),
+    billing_landmark: zod_1.z.string().optional(),
+    billing_country: zod_1.z.string().optional(),
+    billing_state: zod_1.z.string().optional(),
+    billing_postal_code: zod_1.z.number().optional(),
+    registered_street: zod_1.z.string().optional(),
+    registered_city: zod_1.z.string().optional(),
+    registered_landmark: zod_1.z.string().optional(),
+    registered_country: zod_1.z.string().optional(),
+    registered_state: zod_1.z.string().optional(),
+    registered_postal_code: zod_1.z.number().optional(),
+    contact_person_first_name: zod_1.z.string().optional(),
+    contact_person_last_name: zod_1.z.string().optional(),
+    contact_person_middle_name: zod_1.z.string().optional(),
+    contact_person_email: zod_1.z.string().email().optional(),
+    contact_person_phone_number: zod_1.z.string().optional(),
+    account_manager_first_name: zod_1.z.string().optional(),
+    account_manager_last_name: zod_1.z.string().optional(),
+    account_manager_middle_name: zod_1.z.string().optional(),
+    account_manager_designation: zod_1.z.string().optional(),
+    account_manager_email: zod_1.z.string().email().optional(),
+    account_manager_phone_number: zod_1.z.string().optional(),
+    billing_contact_person_first_name: zod_1.z.string().optional(),
+    billing_contact_person_last_name: zod_1.z.string().optional(),
+    billing_contact_person_middle_name: zod_1.z.string().optional(),
+    billing_contact_person_email: zod_1.z.string().email().optional(),
+    billing_contact_person_phone_number: zod_1.z.string().optional(),
+    bank_name: zod_1.z.string().optional(),
+    account_number: zod_1.z.number().optional(),
+    routing_number: zod_1.z.string().optional(),
+    plan_validity: zod_1.z.string().optional(),
+    number_of_users: zod_1.z.string().optional(),
+    profile_picture: zod_1.z.string().optional(),
+    company_name: zod_1.z.string().optional(),
+    company_code: zod_1.z.string().optional(),
+    is_profile_completed: zod_1.z.boolean().optional(),
+    is_admin_user_created: zod_1.z.boolean().optional(),
+    status: zod_1.z.enum(['Deleted', 'Disabled', 'Active']).optional(),
+});
+const addOrganizationZodSchema = zod_1.z.object({
+    body: organizationSchema,
+});
+const updateOrganizationZodSchema = zod_1.z.object({
+    body: organizationSchema,
+});
+exports.OrganizationValidation = {
+    addOrganizationZodSchema,
+    updateOrganizationZodSchema,
+};
