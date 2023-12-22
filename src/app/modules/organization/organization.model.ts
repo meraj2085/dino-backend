@@ -1,11 +1,11 @@
-import mongoose, { Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IOrganization, OrganizationModel } from './organization.interface';
 
 const OrganizationSchema = new Schema<IOrganization, OrganizationModel>(
   {
-    gst_number: String,
-    pan_number: String,
-    tan_number: String,
+    bin_number: String,
+    nid_number: String,
+    tin_number: String,
     email: String,
     street: String,
     city: String,
@@ -43,11 +43,10 @@ const OrganizationSchema = new Schema<IOrganization, OrganizationModel>(
     billing_contact_person_phone_number: String,
     bank_name: String,
     account_number: Number,
-    ifsc_code: String,
+    routing_number: String,
     plan_validity: String,
     number_of_users: String,
     profile_picture: String,
-    coordinates: mongoose.Schema.Types.Mixed,
     company_name: {
       type: String,
       unique: true,
@@ -69,7 +68,6 @@ const OrganizationSchema = new Schema<IOrganization, OrganizationModel>(
       enum: ['Deleted', 'Disabled', 'Active'],
       default: 'Active',
     },
-    enabled_apps: { type: Array, default: [] },
   },
   {
     timestamps: true,

@@ -1,9 +1,9 @@
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 
 export type IOrganization = {
-  gst_number?: string;
-  pan_number?: string;
-  tan_number?: string;
+  bin_number?: string;
+  nid_number?: string;
+  tin_number?: string;
   email?: string;
   street?: string;
   city?: string;
@@ -41,17 +41,15 @@ export type IOrganization = {
   billing_contact_person_phone_number?: string;
   bank_name?: string;
   account_number?: number;
-  ifsc_code?: string;
+  routing_number?: string;
   plan_validity?: string;
   number_of_users?: string;
   profile_picture?: string;
-  coordinates?: mongoose.Schema.Types.Mixed;
   company_name?: string;
   company_code?: string;
   is_profile_completed?: boolean;
   is_admin_user_created?: boolean;
   status?: 'Deleted' | 'Disabled' | 'Active';
-  enabled_apps?: string[];
 };
 
 export type OrganizationModel = Model<IOrganization, Record<string, unknown>>;
