@@ -1,8 +1,8 @@
-import { Schema, model } from 'mongoose';
-import { IOrganization, OrganizationModel } from './organization.interface';
-
-const OrganizationSchema = new Schema<IOrganization, OrganizationModel>(
-  {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Organization = void 0;
+const mongoose_1 = require("mongoose");
+const OrganizationSchema = new mongoose_1.Schema({
     bin_number: String,
     nid_number: String,
     tin_number: String,
@@ -48,36 +48,30 @@ const OrganizationSchema = new Schema<IOrganization, OrganizationModel>(
     number_of_users: String,
     profile_picture: String,
     company_name: {
-      type: String,
-      unique: true,
+        type: String,
+        unique: true,
     },
     company_code: {
-      type: String,
-      unique: true,
+        type: String,
+        unique: true,
     },
     is_profile_completed: {
-      type: Boolean,
-      default: false,
+        type: Boolean,
+        default: false,
     },
     is_admin_user_created: {
-      type: Boolean,
-      default: false,
+        type: Boolean,
+        default: false,
     },
     status: {
-      type: String,
-      enum: ['Deleted', 'Disabled', 'Active'],
-      default: 'Active',
+        type: String,
+        enum: ['Deleted', 'Disabled', 'Active'],
+        default: 'Active',
     },
-  },
-  {
+}, {
     timestamps: true,
     toJSON: {
-      virtuals: true,
+        virtuals: true,
     },
-  }
-);
-
-export const Organization = model<IOrganization, OrganizationModel>(
-  'Organization',
-  OrganizationSchema
-);
+});
+exports.Organization = (0, mongoose_1.model)('Organization', OrganizationSchema);

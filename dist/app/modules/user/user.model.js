@@ -1,8 +1,8 @@
-import { Schema, model } from 'mongoose';
-import { IUser, UserModel } from './user.interface';
-
-const UserSchema = new Schema<IUser, UserModel>(
-  {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.User = void 0;
+const mongoose_1 = require("mongoose");
+const UserSchema = new mongoose_1.Schema({
     organization_id: String,
     first_name: String,
     last_name: String,
@@ -38,55 +38,52 @@ const UserSchema = new Schema<IUser, UserModel>(
     emergency_contact_details: Object,
     contract_date: Date,
     user_type: {
-      type: String,
-      enum: ['super_admin', 'hr', 'employee', 'admin'],
-      default: 'employee',
+        type: String,
+        enum: ['super_admin', 'hr', 'employee', 'admin'],
+        default: 'employee',
     },
     password: String,
     profile_picture: String,
     user_id: {
-      type: String,
-      unique: true,
+        type: String,
+        unique: true,
     },
     status: {
-      type: String,
-      enum: ['Deleted', 'Disabled', 'Active'],
-      default: 'Active',
-      required: true,
+        type: String,
+        enum: ['Deleted', 'Disabled', 'Active'],
+        default: 'Active',
+        required: true,
     },
     last_login_time: {
-      type: Date,
+        type: Date,
     },
     last_online_time: {
-      type: Date,
+        type: Date,
     },
     is_logged_in: {
-      type: Boolean,
-      default: false,
+        type: Boolean,
+        default: false,
     },
     is_online: {
-      type: Boolean,
-      default: false,
+        type: Boolean,
+        default: false,
     },
     is_profile_completed: {
-      type: Boolean,
-      default: false,
+        type: Boolean,
+        default: false,
     },
     is_password_reset: {
-      type: Boolean,
-      default: false,
+        type: Boolean,
+        default: false,
     },
     is_password_created_by_user: {
-      type: Boolean,
-      default: false,
+        type: Boolean,
+        default: false,
     },
-  },
-  {
+}, {
     timestamps: true,
     toJSON: {
-      virtuals: true,
+        virtuals: true,
     },
-  }
-);
-
-export const User = model<IUser, UserModel>('User', UserSchema);
+});
+exports.User = (0, mongoose_1.model)('User', UserSchema);

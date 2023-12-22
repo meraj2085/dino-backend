@@ -1,13 +1,13 @@
-// import express from 'express';
+import express from 'express';
+const router = express.Router();
+import { OrganizationRoutes } from '../modules/organization/organization.route';
 
-// const router = express.Router();
+const moduleRoutes = [
+  {
+    path: '/organization',
+    route: OrganizationRoutes,
+  },
+];
 
-// const moduleRoutes = [
-//   {
-//     path: '/',
-//     route: '',
-//   },
-// ];
-
-// moduleRoutes.forEach(route => router.use(route.path, route.route));
-// export default router;
+moduleRoutes.forEach(route => router.use(route.path, route.route));
+export default router;
