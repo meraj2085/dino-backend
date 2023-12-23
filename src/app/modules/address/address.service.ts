@@ -1,17 +1,12 @@
 import { SortOrder } from 'mongoose';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IPaginationOptions } from '../../../interfaces/pagination';
-import { User } from './user.model';
-import { userFilterableFields } from './user.constant';
-import { IUser, IUserFilters } from './user.interface';
+import { User } from '../user/user.model';
+import { IAddressFilters } from './address.interface';
+import { addressFilterableFields } from './address.constant';
 
-const addUser = async (data: IUser): Promise<IUser | null> => {
-  const user = await User.create(data);
-  return user;
-};
-
-const getUsers = async (
-  filters: IUserFilters,
+const getAllAddress = async (
+  filters: IAddressFilters,
   paginationOptions: IPaginationOptions,
   organization_id: string
 ) => {
@@ -22,7 +17,7 @@ const getUsers = async (
   const andConditions = [];
   if (searchTerm) {
     andConditions.push({
-      $or: userFilterableFields.map(field => ({
+      $or: addressFilterableFields.map(field => ({
         [field]: {
           $regex: searchTerm,
           $options: 'i',
@@ -57,7 +52,13 @@ const getUsers = async (
     .sort(sortConditions)
     .skip(skip)
     .limit(limit)
-    .select('-password');
+    .select([
+      'first_name',
+      'last_name',
+      'email',
+      'phone_number',
+      'office_email',
+    ]);
 
   const total = await User.countDocuments(whereConditions);
 
@@ -71,48 +72,6 @@ const getUsers = async (
   };
 };
 
-const getSingleUser = async (
-  id: string,
-  organization_id: string
-): Promise<IUser | null> => {
-  const user = await User.findOne({
-    _id: id,
-    organization_id,
-  }).select('-password');
-
-  return user;
-};
-
-const updateUser = async (
-  id: string,
-  payload: Partial<IUser>,
-  organization_id: string
-): Promise<IUser | null> => {
-  const updateUser = await User.findOneAndUpdate(
-    { _id: id, organization_id },
-    payload,
-    {
-      new: true,
-    }
-  ).select('-password');
-  return updateUser;
-};
-
-const deleteUser = async (
-  id: string,
-  organization_id: string
-): Promise<IUser | null> => {
-  const user = await User.findOneAndDelete({
-    _id: id,
-    organization_id,
-  }).select('-password');
-  return user;
-};
-
-export const UserService = {
-  addUser,
-  getUsers,
-  getSingleUser,
-  updateUser,
-  deleteUser,
+export const AddressService = {
+  getAllAddress,
 };

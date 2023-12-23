@@ -22,9 +22,10 @@ const addUser: RequestHandler = catchAsync(
 
 const getUsers: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
+    const organization_id = req.user?.organization_id;
     const filters = pick(req.query, userFilterableFields);
     const paginationOptions = pick(req.query, paginationFields);
-    const result = await UserService.getUsers(filters, paginationOptions);
+    const result = await UserService.getUsers(filters, paginationOptions, organization_id);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -39,7 +40,8 @@ const getUsers: RequestHandler = catchAsync(
 const getSingleUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;
-    const result = await UserService.getSingleUser(id);
+    const organization_id = req.user?.organization_id;
+    const result = await UserService.getSingleUser(id, organization_id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -51,9 +53,10 @@ const getSingleUser: RequestHandler = catchAsync(
 
 const updateUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
+    const organization_id = req.user?.organization_id;
     const id = req.params.id;
     const data = req.body;
-    const result = await UserService.updateUser(id, data);
+    const result = await UserService.updateUser(id, data, organization_id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -65,8 +68,9 @@ const updateUser: RequestHandler = catchAsync(
 
 const deleteUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
+    const organization_id = req.user?.organization_id;
     const id = req.params.id;
-    const result = await UserService.deleteUser(id);
+    const result = await UserService.deleteUser(id, organization_id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
