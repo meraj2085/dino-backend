@@ -5,6 +5,8 @@ import { UserRoutes } from '../modules/user/user.route';
 import { AuthRoutes } from '../modules/auth/auth.route';
 import { AddressRoutes } from '../modules/address/address.route';
 import { NotificationRoutes } from '../modules/notification/notification.route';
+import { AppointmentRoutes } from '../modules/appointment/appointment.route';
+import { FeedbackRoutes } from '../modules/feedback/feedback.route';
 
 const moduleRoutes = [
   {
@@ -26,6 +28,14 @@ const moduleRoutes = [
   {
     path: '/notification',
     route: NotificationRoutes,
+  },
+  {
+    path: '/appointment',
+    route: AppointmentRoutes,
+  },
+  {
+    path: '/feedback',
+    route: FeedbackRoutes,
   },
 ];
 
