@@ -2,8 +2,8 @@ import { Model } from 'mongoose';
 
 export type IUser = {
   first_name?: string;
-  last_name?: string;
   middle_name?: string;
+  last_name?: string;
   date_of_birth?: Date;
   gender?: string;
   employment_status?: string;
@@ -50,3 +50,11 @@ export type IUser = {
 };
 
 export type UserModel = Model<IUser, Record<string, unknown>>;
+
+export type IUserFilters = {
+  searchTerm?: string;
+  id?: string;
+  first_name?: string;
+  middle_name?: string;
+  last_name?: string;
+};
