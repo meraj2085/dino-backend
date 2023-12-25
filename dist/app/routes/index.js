@@ -7,6 +7,11 @@ const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const organization_route_1 = require("../modules/organization/organization.route");
 const user_route_1 = require("../modules/user/user.route");
+const auth_route_1 = require("../modules/auth/auth.route");
+const address_route_1 = require("../modules/address/address.route");
+const notification_route_1 = require("../modules/notification/notification.route");
+const appointment_route_1 = require("../modules/appointment/appointment.route");
+const feedback_route_1 = require("../modules/feedback/feedback.route");
 const moduleRoutes = [
     {
         path: '/organization',
@@ -15,6 +20,26 @@ const moduleRoutes = [
     {
         path: '/user',
         route: user_route_1.UserRoutes,
+    },
+    {
+        path: '/auth',
+        route: auth_route_1.AuthRoutes,
+    },
+    {
+        path: '/address',
+        route: address_route_1.AddressRoutes,
+    },
+    {
+        path: '/notification',
+        route: notification_route_1.NotificationRoutes,
+    },
+    {
+        path: '/appointment',
+        route: appointment_route_1.AppointmentRoutes,
+    },
+    {
+        path: '/feedback',
+        route: feedback_route_1.FeedbackRoutes,
     },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));
