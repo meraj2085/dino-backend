@@ -3,6 +3,9 @@ import { Request, RequestHandler, Response } from 'express';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { AppointmentService } from './appointment.service';
+import pick from '../../../shared/pick';
+import { appointmentFilterableFields } from './appointment.constant';
+import { paginationFields } from '../../../constants/pagination';
 
 const addAppointment: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
@@ -45,12 +48,19 @@ const updateScheduleAndStatus: RequestHandler = catchAsync(
 
 const getAllAppointment: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const result = await AppointmentService.getAllAppointment();
+    const filters = pick(req.query, appointmentFilterableFields);
+    const paginationOptions = pick(req.query, paginationFields);
+    const result = await AppointmentService.getAllAppointment(
+      filters,
+      paginationOptions
+    );
+
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Appointments fetched successfully',
-      data: result,
+      message: 'Appointment fetched successfully',
+      meta: result.meta,
+      data: result.data,
     });
   }
 );

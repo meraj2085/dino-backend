@@ -10,7 +10,6 @@ const addAppointmentZodSchema = z.object({
     appointment_time: z.string().nonempty(),
     subject: z.string().nonempty(),
     message: z.string().nonempty(),
-    appointment_status: z.string().nonempty(),
   }),
 });
 

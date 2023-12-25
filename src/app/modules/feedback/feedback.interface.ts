@@ -7,3 +7,10 @@ export type IFeedback = {
 };
 
 export type FeedbackModel = Model<IFeedback, Record<string, unknown>>;
+
+export type IFeedbackFilters = {
+  searchTerm?: string;
+  id?: string;
+  name?: string;
+  email?: string;
+};
