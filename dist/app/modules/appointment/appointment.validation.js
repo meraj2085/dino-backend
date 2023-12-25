@@ -12,7 +12,6 @@ const addAppointmentZodSchema = zod_1.z.object({
         appointment_time: zod_1.z.string().nonempty(),
         subject: zod_1.z.string().nonempty(),
         message: zod_1.z.string().nonempty(),
-        appointment_status: zod_1.z.string().nonempty(),
     }),
 });
 const updateAppointmentZodSchema = zod_1.z.object({

@@ -7,12 +7,21 @@ import { EventValidation } from './event.validation';
 const router = express.Router();
 
 // Routes
-router.get('/', auth(ENUM_USER_ROLE.ADMIN), EventController.getAllEvent);
+router.get(
+  '/',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.HR, ENUM_USER_ROLE.EMPLOYEE),
+  EventController.getAllEvent
+);
 
-router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), EventController.getSingleEvent);
+router.get(
+  '/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.HR, ENUM_USER_ROLE.EMPLOYEE),
+  EventController.getSingleEvent
+);
 
 router.post(
   '/',
+  auth(ENUM_USER_ROLE.ADMIN),
   validateRequest(EventValidation.addEventZodSchema),
   EventController.addEvent
 );

@@ -7,6 +7,7 @@ export enum type {
 }
 
 export type IEvent = {
+  organization_id: string;
   from_date: string;
   to_date: string;
   title: string;

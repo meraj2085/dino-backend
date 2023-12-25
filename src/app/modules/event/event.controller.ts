@@ -9,8 +9,9 @@ import { EventService } from './event.service';
 
 const addEvent: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
+    const organization_id = req.user?.organization_id;
     const data = req.body;
-    const result = await EventService.addEvent(data);
+    const result = await EventService.addEvent(data, organization_id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -22,9 +23,14 @@ const addEvent: RequestHandler = catchAsync(
 
 const getAllEvent: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
+    const organization_id = req.user?.organization_id;
     const filters = pick(req.query, eventFilterableFields);
     const paginationOptions = pick(req.query, paginationFields);
-    const result = await EventService.getAllEvent(filters, paginationOptions);
+    const result = await EventService.getAllEvent(
+      filters,
+      paginationOptions,
+      organization_id
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -38,8 +44,9 @@ const getAllEvent: RequestHandler = catchAsync(
 
 const getSingleEvent: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
+    const organization_id = req.user?.organization_id;
     const id = req.params.id;
-    const result = await EventService.getSingleEvent(id);
+    const result = await EventService.getSingleEvent(id, organization_id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -53,7 +60,8 @@ const updateEvent: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;
     const data = req.body;
-    const result = await EventService.updateEvent(id, data);
+    const organization_id = req.user?.organization_id;
+    const result = await EventService.updateEvent(id, data, organization_id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -66,7 +74,8 @@ const updateEvent: RequestHandler = catchAsync(
 const deleteEvent: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;
-    const result = await EventService.deleteEvent(id);
+    const organization_id = req.user?.organization_id;
+    const result = await EventService.deleteEvent(id, organization_id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -80,5 +89,6 @@ export const EventController = {
   addEvent,
   getAllEvent,
   getSingleEvent,
-  updateEvent,deleteEvent
+  updateEvent,
+  deleteEvent,
 };

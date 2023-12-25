@@ -20,36 +20,21 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppointmentService = void 0;
+exports.EventService = void 0;
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
-const appointment_constant_1 = require("./appointment.constant");
-const appointment_model_1 = require("./appointment.model");
-const addAppointment = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const service = yield appointment_model_1.Appointment.create(data);
+const event_constant_1 = require("./event.constant");
+const event_model_1 = require("./event.model");
+const addEvent = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const service = yield event_model_1.Event.create(data);
     return service;
 });
-const getSingleAppointment = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const appointment = yield appointment_model_1.Appointment.findById(id);
-    return appointment;
-});
-const updateScheduleAndStatus = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = data;
-    const appointment = yield appointment_model_1.Appointment.findByIdAndUpdate(id, {
-        appointment_date: data === null || data === void 0 ? void 0 : data.appointment_date,
-        appointment_time: data === null || data === void 0 ? void 0 : data.appointment_time,
-        appointment_status: data === null || data === void 0 ? void 0 : data.appointment_status,
-    }, {
-        new: true,
-    });
-    return appointment;
-});
-const getAllAppointment = (filters, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllEvent = (filters, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
     const { searchTerm } = filters, filtersData = __rest(filters, ["searchTerm"]);
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper_1.paginationHelpers.calculatePagination(paginationOptions);
     const andConditions = [];
     if (searchTerm) {
         andConditions.push({
-            $or: appointment_constant_1.appointmentFilterableFields.map(field => ({
+            $or: event_constant_1.eventFilterableFields.map(field => ({
                 [field]: {
                     $regex: searchTerm,
                     $options: 'i',
@@ -69,11 +54,11 @@ const getAllAppointment = (filters, paginationOptions) => __awaiter(void 0, void
         sortConditions[sortBy] = sortOrder;
     }
     const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
-    const result = yield appointment_model_1.Appointment.find(whereConditions)
+    const result = yield event_model_1.Event.find(whereConditions)
         .sort(sortConditions)
         .skip(skip)
         .limit(limit);
-    const total = yield appointment_model_1.Appointment.countDocuments(whereConditions);
+    const total = yield event_model_1.Event.countDocuments(whereConditions);
     return {
         meta: {
             page,
@@ -83,9 +68,23 @@ const getAllAppointment = (filters, paginationOptions) => __awaiter(void 0, void
         data: result,
     };
 });
-exports.AppointmentService = {
-    addAppointment,
-    getSingleAppointment,
-    getAllAppointment,
-    updateScheduleAndStatus,
+const getSingleEvent = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const event = yield event_model_1.Event.findById(id);
+    return event;
+});
+const updateEvent = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const updateEvent = yield event_model_1.Event.findOneAndUpdate({ _id: id }, payload, {
+        new: true,
+    });
+    return updateEvent;
+});
+const deleteEvent = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const organization = yield event_model_1.Event.findByIdAndDelete(id);
+    return organization;
+});
+exports.EventService = {
+    addEvent,
+    getAllEvent,
+    getSingleEvent,
+    updateEvent, deleteEvent
 };

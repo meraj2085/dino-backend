@@ -17,6 +17,9 @@ const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const feedback_service_1 = require("./feedback.service");
+const pick_1 = __importDefault(require("../../../shared/pick"));
+const feedback_constant_1 = require("./feedback.constant");
+const pagination_1 = require("../../../constants/pagination");
 const addFeedback = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
     const result = yield feedback_service_1.FeedbackService.addFeedback(data);
@@ -28,12 +31,15 @@ const addFeedback = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
     });
 }));
 const getAllFeedback = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield feedback_service_1.FeedbackService.getAllFeedback();
+    const filters = (0, pick_1.default)(req.query, feedback_constant_1.feedbackFilterableFields);
+    const paginationOptions = (0, pick_1.default)(req.query, pagination_1.paginationFields);
+    const result = yield feedback_service_1.FeedbackService.getAllFeedback(filters, paginationOptions);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Feedback fetched successfully',
-        data: result,
+        meta: result.meta,
+        data: result.data,
     });
 }));
 const getSingleFeedback = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
