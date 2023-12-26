@@ -20,21 +20,21 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
+exports.EventService = void 0;
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
-const user_model_1 = require("./user.model");
-const user_constant_1 = require("./user.constant");
-const addUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.User.create(data);
-    return user;
+const event_constant_1 = require("./event.constant");
+const event_model_1 = require("./event.model");
+const addEvent = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const service = yield event_model_1.Event.create(data);
+    return service;
 });
-const getUsers = (filters, paginationOptions, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllEvent = (filters, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
     const { searchTerm } = filters, filtersData = __rest(filters, ["searchTerm"]);
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper_1.paginationHelpers.calculatePagination(paginationOptions);
     const andConditions = [];
     if (searchTerm) {
         andConditions.push({
-            $or: user_constant_1.userFilterableFields.map(field => ({
+            $or: event_constant_1.eventFilterableFields.map(field => ({
                 [field]: {
                     $regex: searchTerm,
                     $options: 'i',
@@ -53,19 +53,12 @@ const getUsers = (filters, paginationOptions, organization_id) => __awaiter(void
     if (sortBy && sortOrder) {
         sortConditions[sortBy] = sortOrder;
     }
-    andConditions.push({
-        organization_id,
-        user_type: {
-            $ne: 'super_admin',
-        },
-    });
     const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
-    const result = yield user_model_1.User.find(whereConditions)
+    const result = yield event_model_1.Event.find(whereConditions)
         .sort(sortConditions)
         .skip(skip)
-        .limit(limit)
-        .select('-password');
-    const total = yield user_model_1.User.countDocuments(whereConditions);
+        .limit(limit);
+    const total = yield event_model_1.Event.countDocuments(whereConditions);
     return {
         meta: {
             page,
@@ -75,30 +68,23 @@ const getUsers = (filters, paginationOptions, organization_id) => __awaiter(void
         data: result,
     };
 });
-const getSingleUser = (id, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.User.findOne({
-        _id: id,
-        organization_id,
-    }).select('-password');
-    return user;
+const getSingleEvent = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const event = yield event_model_1.Event.findById(id);
+    return event;
 });
-const updateUser = (id, payload, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
-    const updateUser = yield user_model_1.User.findOneAndUpdate({ _id: id, organization_id }, payload, {
+const updateEvent = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const updateEvent = yield event_model_1.Event.findOneAndUpdate({ _id: id }, payload, {
         new: true,
-    }).select('-password');
-    return updateUser;
+    });
+    return updateEvent;
 });
-const deleteUser = (id, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.User.findOneAndDelete({
-        _id: id,
-        organization_id,
-    }).select('-password');
-    return user;
+const deleteEvent = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const organization = yield event_model_1.Event.findByIdAndDelete(id);
+    return organization;
 });
-exports.UserService = {
-    addUser,
-    getUsers,
-    getSingleUser,
-    updateUser,
-    deleteUser,
+exports.EventService = {
+    addEvent,
+    getAllEvent,
+    getSingleEvent,
+    updateEvent, deleteEvent
 };

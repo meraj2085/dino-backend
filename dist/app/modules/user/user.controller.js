@@ -31,9 +31,11 @@ const addUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0
     });
 }));
 const getUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const organization_id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.organization_id;
     const filters = (0, pick_1.default)(req.query, user_constant_1.userFilterableFields);
     const paginationOptions = (0, pick_1.default)(req.query, pagination_1.paginationFields);
-    const result = yield user_service_1.UserService.getUsers(filters, paginationOptions);
+    const result = yield user_service_1.UserService.getUsers(filters, paginationOptions, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -43,8 +45,10 @@ const getUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 
     });
 }));
 const getSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
     const id = req.params.id;
-    const result = yield user_service_1.UserService.getSingleUser(id);
+    const organization_id = (_b = req.user) === null || _b === void 0 ? void 0 : _b.organization_id;
+    const result = yield user_service_1.UserService.getSingleUser(id, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -53,9 +57,11 @@ const getSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
+    const organization_id = (_c = req.user) === null || _c === void 0 ? void 0 : _c.organization_id;
     const id = req.params.id;
     const data = req.body;
-    const result = yield user_service_1.UserService.updateUser(id, data);
+    const result = yield user_service_1.UserService.updateUser(id, data, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -64,8 +70,10 @@ const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
     });
 }));
 const deleteUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _d;
+    const organization_id = (_d = req.user) === null || _d === void 0 ? void 0 : _d.organization_id;
     const id = req.params.id;
-    const result = yield user_service_1.UserService.deleteUser(id);
+    const result = yield user_service_1.UserService.deleteUser(id, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

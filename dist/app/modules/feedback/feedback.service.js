@@ -20,21 +20,21 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
+exports.FeedbackService = void 0;
+const feedback_model_1 = require("./feedback.model");
+const feedback_constant_1 = require("./feedback.constant");
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
-const user_model_1 = require("./user.model");
-const user_constant_1 = require("./user.constant");
-const addUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.User.create(data);
-    return user;
+const addFeedback = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const feedback = yield feedback_model_1.Feedback.create(data);
+    return feedback;
 });
-const getUsers = (filters, paginationOptions, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllFeedback = (filters, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
     const { searchTerm } = filters, filtersData = __rest(filters, ["searchTerm"]);
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper_1.paginationHelpers.calculatePagination(paginationOptions);
     const andConditions = [];
     if (searchTerm) {
         andConditions.push({
-            $or: user_constant_1.userFilterableFields.map(field => ({
+            $or: feedback_constant_1.feedbackFilterableFields.map(field => ({
                 [field]: {
                     $regex: searchTerm,
                     $options: 'i',
@@ -53,19 +53,12 @@ const getUsers = (filters, paginationOptions, organization_id) => __awaiter(void
     if (sortBy && sortOrder) {
         sortConditions[sortBy] = sortOrder;
     }
-    andConditions.push({
-        organization_id,
-        user_type: {
-            $ne: 'super_admin',
-        },
-    });
     const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
-    const result = yield user_model_1.User.find(whereConditions)
+    const result = yield feedback_model_1.Feedback.find(whereConditions)
         .sort(sortConditions)
         .skip(skip)
-        .limit(limit)
-        .select('-password');
-    const total = yield user_model_1.User.countDocuments(whereConditions);
+        .limit(limit);
+    const total = yield feedback_model_1.Feedback.countDocuments(whereConditions);
     return {
         meta: {
             page,
@@ -75,30 +68,12 @@ const getUsers = (filters, paginationOptions, organization_id) => __awaiter(void
         data: result,
     };
 });
-const getSingleUser = (id, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.User.findOne({
-        _id: id,
-        organization_id,
-    }).select('-password');
-    return user;
+const getSingleFeedback = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const feedback = yield feedback_model_1.Feedback.findById(id);
+    return feedback;
 });
-const updateUser = (id, payload, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
-    const updateUser = yield user_model_1.User.findOneAndUpdate({ _id: id, organization_id }, payload, {
-        new: true,
-    }).select('-password');
-    return updateUser;
-});
-const deleteUser = (id, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.User.findOneAndDelete({
-        _id: id,
-        organization_id,
-    }).select('-password');
-    return user;
-});
-exports.UserService = {
-    addUser,
-    getUsers,
-    getSingleUser,
-    updateUser,
-    deleteUser,
+exports.FeedbackService = {
+    addFeedback,
+    getAllFeedback,
+    getSingleFeedback,
 };
