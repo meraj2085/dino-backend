@@ -24,11 +24,12 @@ exports.EventService = void 0;
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const event_constant_1 = require("./event.constant");
 const event_model_1 = require("./event.model");
-const addEvent = (data) => __awaiter(void 0, void 0, void 0, function* () {
+const addEvent = (data, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
+    data.organization_id = organization_id;
     const service = yield event_model_1.Event.create(data);
     return service;
 });
-const getAllEvent = (filters, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllEvent = (filters, paginationOptions, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
     const { searchTerm } = filters, filtersData = __rest(filters, ["searchTerm"]);
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper_1.paginationHelpers.calculatePagination(paginationOptions);
     const andConditions = [];
@@ -53,6 +54,12 @@ const getAllEvent = (filters, paginationOptions) => __awaiter(void 0, void 0, vo
     if (sortBy && sortOrder) {
         sortConditions[sortBy] = sortOrder;
     }
+    andConditions.push({
+        organization_id,
+        user_type: {
+            $ne: 'super_admin',
+        },
+    });
     const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
     const result = yield event_model_1.Event.find(whereConditions)
         .sort(sortConditions)
@@ -68,23 +75,27 @@ const getAllEvent = (filters, paginationOptions) => __awaiter(void 0, void 0, vo
         data: result,
     };
 });
-const getSingleEvent = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const event = yield event_model_1.Event.findById(id);
+const getSingleEvent = (id, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
+    const event = yield event_model_1.Event.findOne({ _id: id, organization_id });
     return event;
 });
-const updateEvent = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const updateEvent = yield event_model_1.Event.findOneAndUpdate({ _id: id }, payload, {
+const updateEvent = (id, payload, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
+    const updateEvent = yield event_model_1.Event.findOneAndUpdate({ _id: id, organization_id }, payload, {
         new: true,
     });
     return updateEvent;
 });
-const deleteEvent = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const organization = yield event_model_1.Event.findByIdAndDelete(id);
+const deleteEvent = (id, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
+    const organization = yield event_model_1.Event.findOneAndDelete({
+        _id: id,
+        organization_id,
+    });
     return organization;
 });
 exports.EventService = {
     addEvent,
     getAllEvent,
     getSingleEvent,
-    updateEvent, deleteEvent
+    updateEvent,
+    deleteEvent,
 };

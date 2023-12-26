@@ -21,8 +21,10 @@ const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const event_constant_1 = require("./event.constant");
 const event_service_1 = require("./event.service");
 const addEvent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const organization_id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.organization_id;
     const data = req.body;
-    const result = yield event_service_1.EventService.addEvent(data);
+    const result = yield event_service_1.EventService.addEvent(data, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -31,9 +33,11 @@ const addEvent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 
     });
 }));
 const getAllEvent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    const organization_id = (_b = req.user) === null || _b === void 0 ? void 0 : _b.organization_id;
     const filters = (0, pick_1.default)(req.query, event_constant_1.eventFilterableFields);
     const paginationOptions = (0, pick_1.default)(req.query, pagination_1.paginationFields);
-    const result = yield event_service_1.EventService.getAllEvent(filters, paginationOptions);
+    const result = yield event_service_1.EventService.getAllEvent(filters, paginationOptions, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -43,8 +47,10 @@ const getAllEvent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
     });
 }));
 const getSingleEvent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
+    const organization_id = (_c = req.user) === null || _c === void 0 ? void 0 : _c.organization_id;
     const id = req.params.id;
-    const result = yield event_service_1.EventService.getSingleEvent(id);
+    const result = yield event_service_1.EventService.getSingleEvent(id, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -53,9 +59,11 @@ const getSingleEvent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
     });
 }));
 const updateEvent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _d;
     const id = req.params.id;
     const data = req.body;
-    const result = yield event_service_1.EventService.updateEvent(id, data);
+    const organization_id = (_d = req.user) === null || _d === void 0 ? void 0 : _d.organization_id;
+    const result = yield event_service_1.EventService.updateEvent(id, data, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -64,8 +72,10 @@ const updateEvent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
     });
 }));
 const deleteEvent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _e;
     const id = req.params.id;
-    const result = yield event_service_1.EventService.deleteEvent(id);
+    const organization_id = (_e = req.user) === null || _e === void 0 ? void 0 : _e.organization_id;
+    const result = yield event_service_1.EventService.deleteEvent(id, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -77,5 +87,6 @@ exports.EventController = {
     addEvent,
     getAllEvent,
     getSingleEvent,
-    updateEvent, deleteEvent
+    updateEvent,
+    deleteEvent,
 };
