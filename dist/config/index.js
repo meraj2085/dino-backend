@@ -18,4 +18,8 @@ exports.default = {
         expires_in: process.env.JWT_EXPIRES_IN,
         refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN,
     },
+    mail: {
+        nodemailer_email: process.env.NODEMAILER_EMAIL,
+        email_app_password: process.env.EMAIL_APP_PASSWORD,
+    },
 };
