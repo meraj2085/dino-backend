@@ -20,7 +20,7 @@ app.use('/api/v1/', routes);
 app.get('/', async (req: Request, res: Response) => {
   res.send({
     status: 'success',
-    message: 'Working successfully!!',
+    message: 'Working successfully!',
   });
 });
 
