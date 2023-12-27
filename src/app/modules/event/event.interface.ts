@@ -21,5 +21,6 @@ export type IEventFilters = {
   id?: string;
   from_date?: string;
   to_date?: string;
+  title?: string;
   type?: string;
 };

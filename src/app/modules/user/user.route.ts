@@ -9,18 +9,18 @@ const router = express.Router();
 // Routes
 router.get(
   '/',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.HR),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.EMPLOYEE),
   UserController.getUsers
 );
 router.get(
   '/:id',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.HR, ENUM_USER_ROLE.EMPLOYEE),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.EMPLOYEE),
   UserController.getSingleUser
 );
 router.post(
   '/',
-  auth(ENUM_USER_ROLE.ADMIN),
-  validateRequest(UserValidation.addUserZodSchema),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  // validateRequest(UserValidation.addUserZodSchema),
   UserController.addUser
 );
 router.patch(
