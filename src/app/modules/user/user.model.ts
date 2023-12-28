@@ -8,80 +8,64 @@ const UserSchema = new Schema<IUser, UserModel>(
   {
     organization_id: String,
     first_name: String,
-    middle_name: String,
     last_name: String,
     date_of_birth: String,
     gender: String,
-    employment_status: String,
-    employee_code: String,
+    employment_status: String, // ['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance']
+    employee_code: String, // [EMP00001]
     office_email: String,
     date_of_joining: String,
-    department: String,
+    department: String, // ['HR', 'IT', 'Finance', 'Marketing', 'Sales', 'Operations']
     flat_number: String,
     building_name: String,
     street: String,
-    branch: String,
     city: String,
     landmark: String,
     country: String,
     state: String,
-    postal_code: Number,
-    permanent_address: Object,
+    postal_code: String,
     phone_number: String,
     other_phone_number: String,
     personal_email: String,
     bank_name: String,
-    account_number: Number,
-    bank_details: Object,
-    designation: String,
-    team: String,
-    role: String,
-    manager_id: String,
-    emergency_contact: Object,
-    emergency_contact_details: Object,
+    account_number: String,
+    branch_name: String,
+    designation: String, // ['Software Engineer', 'Senior Software Engineer', 'Team Lead', 'Project Manager', 'Product Manager', 'CEO', 'CTO', 'COO', 'CFO', 'HR Manager', 'HR Executive', 'HR Intern', 'Marketing Manager', 'Marketing Executive', 'Marketing Intern', 'Sales Manager', 'Sales Executive', 'Sales Intern', 'Finance Manager', 'Finance Executive', 'Finance Intern', 'Operations Manager', 'Operations Executive', 'Operations Intern']
+    team: String, // ['IT', 'Finance', 'Marketing', 'Sales', 'Operations']
+    role: String, // ['Employee', 'Manager', 'Developer', 'Designer', 'Tester']
+    manager_id: String, // [_id of user thats role is manager]
+    emergency_contact: {
+      full_name: String,
+      phone_number: String,
+      email: String,
+      relationship: String,
+    },
     contract_date: String,
     user_type: {
       type: String,
-      enum: ['super_admin', 'hr', 'employee', 'admin'],
+      enum: ['super_admin', 'admin', 'employee'],
       default: 'employee',
     },
-    password: String,
-    profile_picture: String,
-    user_id: {
+    password: {
       type: String,
-      unique: true,
+      default: 'Dino-123',
     },
+    profile_picture: String,
     status: {
       type: String,
       enum: ['Deleted', 'Disabled', 'Active'],
       default: 'Active',
       required: true,
     },
-    last_login_time: {
-      type: String,
-    },
-    last_online_time: {
-      type: String,
-    },
-    is_logged_in: {
-      type: Boolean,
-      default: false,
-    },
-    is_online: {
-      type: Boolean,
-      default: false,
-    },
-    is_profile_completed: {
-      type: Boolean,
-      default: false,
-    },
     is_password_reset: {
       type: Boolean,
       default: false,
     },
-    is_password_created_by_user: {
-      type: Boolean,
-      default: false,
+    salaryDetails: {
+      basic_salary: String,
+      total_allowance: String,
+      annual_bonus: String,
+      total_ctc: String,
     },
   },
   {

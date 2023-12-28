@@ -30,7 +30,7 @@ app.use('/api/v1/', routes_1.default);
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send({
         status: 'success',
-        message: 'Working successfully!!',
+        message: 'Working successfully!',
     });
 }));
 // Global Error Handler
