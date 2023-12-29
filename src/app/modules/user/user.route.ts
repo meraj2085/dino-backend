@@ -20,7 +20,7 @@ router.get(
 router.post(
   '/',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
-  // validateRequest(UserValidation.addUserZodSchema),
+  validateRequest(UserValidation.addUserZodSchema),
   UserController.addUser
 );
 router.patch(
