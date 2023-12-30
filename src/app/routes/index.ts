@@ -7,6 +7,7 @@ import { FeedbackRoutes } from '../modules/feedback/feedback.route';
 import { NotificationRoutes } from '../modules/notification/notification.route';
 import { OrganizationRoutes } from '../modules/organization/organization.route';
 import { UserRoutes } from '../modules/user/user.route';
+import { LeaveRoutes } from '../modules/leave/Leave.route';
 const router = express.Router();
 
 const moduleRoutes = [
@@ -41,6 +42,10 @@ const moduleRoutes = [
   {
     path: '/event',
     route: EventRoutes,
+  },
+  {
+    path: '/leave',
+    route: LeaveRoutes,
   },
 ];
 

@@ -8,6 +8,10 @@ const leaveSchema = new Schema<ILeave>(
       type: String,
       required: true,
     },
+    leave_type: {
+      type: String,
+      required: true,
+    },
     from_date: String,
     to_date: String,
     no_of_days: Number,

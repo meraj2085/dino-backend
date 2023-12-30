@@ -3,6 +3,7 @@ import { Model } from 'mongoose';
 
 export type ILeave = {
   user_id: string;
+  leave_type: string;
   from_date: string;
   to_date: string;
   no_of_days: string;
