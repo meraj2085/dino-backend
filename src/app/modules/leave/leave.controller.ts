@@ -3,11 +3,13 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { LeaveService } from './leave.service';
 import httpStatus from 'http-status';
+import pick from '../../../shared/pick';
+import { leaveFilterableFields } from './leave.constant';
+import { paginationFields } from '../../../constants/pagination';
 
 const addLeave: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const data = req.body;
-    // console.log(data);
     const result = await LeaveService.addLeave(data);
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -17,7 +19,37 @@ const addLeave: RequestHandler = catchAsync(
     });
   }
 );
+const getAllLeaves: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const filters = pick(req.query, leaveFilterableFields);
+    const paginationOptions = pick(req.query, paginationFields);
+    const result = await LeaveService.getAllLeaves(filters, paginationOptions);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Leave fetched successfully',
+      meta: result.meta,
+      data: result.data,
+    });
+  }
+);
+
+const getSingleLeave: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await LeaveService.getSingleLeave(id);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Leave fetched successfully',
+      data: result,
+    });
+  }
+);
 
 export const LeaveController = {
   addLeave,
+  getAllLeaves,
+  getSingleLeave,
 };

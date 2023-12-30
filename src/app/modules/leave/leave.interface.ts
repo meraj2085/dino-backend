@@ -16,5 +16,7 @@ export type LeaveModel = Model<ILeave, Record<string, unknown>>;
 
 export type ILeaveFilters = {
   searchTerm?: string;
-  email?: string;
+  user_id?: string;
+  reason?: string;
+  status?: string;
 };
