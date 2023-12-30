@@ -14,6 +14,11 @@ router.get(
   UserController.getUsers
 );
 router.get(
+  '/my-team',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.EMPLOYEE),
+  UserController.getMyTeam
+);
+router.get(
   '/:id',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.EMPLOYEE),
   UserController.getSingleUser
