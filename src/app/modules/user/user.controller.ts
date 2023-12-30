@@ -6,11 +6,15 @@ import { UserService } from './user.service';
 import pick from '../../../shared/pick';
 import { paginationFields } from '../../../constants/pagination';
 import { userFilterableFields } from './user.constant';
+import { IUploadFile } from '../../../interfaces/file';
 
 const addUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const data = req.body;
-    const result = await UserService.addUser(data);
+
+    const file = req.file as IUploadFile;
+
+    const result = await UserService.addUser(data, file);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,

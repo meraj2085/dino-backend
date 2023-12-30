@@ -1,9 +1,8 @@
-import express from 'express';
-// import auth from '../../middlewares/auth';
-// import { ENUM_USER_ROLE } from '../../../enums/user';
+import express, { NextFunction, Request, Response } from 'express';
 import { OrganizationController } from './organization.controller';
-import validateRequest from '../../middlewares/validateRequest';
+// import validateRequest from '../../middlewares/validateRequest';
 import { OrganizationValidation } from './organization.validation';
+import { fileUploadHelper } from '../../../helpers/fileUploadHelper';
 const router = express.Router();
 
 // Routes
@@ -11,13 +10,34 @@ router.get('/', OrganizationController.getOrganizations);
 router.get('/:id', OrganizationController.getSingleOrganization);
 router.post(
   '/',
-  validateRequest(OrganizationValidation.addOrganizationZodSchema),
-  OrganizationController.addOrganization
+
+  fileUploadHelper.upload.single('profile_picture'),
+
+  (req: Request, res: Response, next: NextFunction) => {
+    // console.log(req.body);
+    req.body = OrganizationValidation.addOrganizationZodSchema.parse(
+      JSON.parse(req.body.data)
+    );
+    return OrganizationController.addOrganization(req, res, next);
+  }
+  // validateRequest(OrganizationValidation.addOrganizationZodSchema),
+  // OrganizationController.addOrganization
 );
 router.patch(
   '/:id',
-  validateRequest(OrganizationValidation.updateOrganizationZodSchema),
-  OrganizationController.updateOrganization
+  
+  fileUploadHelper.upload.single('profile_picture'),
+
+  (req: Request, res: Response, next: NextFunction) => {
+    // console.log(req.body);
+    req.body = OrganizationValidation.updateOrganizationZodSchema.parse(
+      JSON.parse(req.body.data)
+    );
+    return OrganizationController.updateOrganization(req, res, next);
+  }
+
+  // validateRequest(OrganizationValidation.updateOrganizationZodSchema),
+  // OrganizationController.updateOrganization
 );
 router.delete('/:id', OrganizationController.deleteOrganization);
 

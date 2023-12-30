@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const addOrganizationZodSchema = z.object({
-  body: z.object({
+  // body: z.object({
     bin_number: z.string({ required_error: 'BIN Number is required' }),
     nid_number: z.string({ required_error: 'NID Number is required' }),
     tin_number: z.string({ required_error: 'TIN Number is required' }),
@@ -95,11 +95,11 @@ const addOrganizationZodSchema = z.object({
     // is_profile_completed: z.boolean().optional(),
     // is_admin_user_created: z.boolean().optional(),
     // status: z.enum(['Deleted', 'Disabled', 'Active']).optional(),
-  }),
+  // }),
 });
 
 const updateOrganizationZodSchema = z.object({
-  body: z.object({
+  // body: z.object({
     bin_number: z.string().optional(),
     nid_number: z.string().optional(),
     tin_number: z.string().optional(),
@@ -151,7 +151,7 @@ const updateOrganizationZodSchema = z.object({
     is_profile_completed: z.boolean().optional(),
     is_admin_user_created: z.boolean().optional(),
     status: z.enum(['Deleted', 'Disabled', 'Active']).optional(),
-  }),
+  // }),
 });
 
 export const OrganizationValidation = {

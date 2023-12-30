@@ -4,8 +4,22 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import { User } from './user.model';
 import { userFilterableFields } from './user.constant';
 import { IUser, IUserFilters } from './user.interface';
+import { ICloudinaryResponse, IUploadFile } from '../../../interfaces/file';
+import { fileUploadHelper } from '../../../helpers/fileUploadHelper';
 
-const addUser = async (data: IUser): Promise<IUser | null> => {
+const addUser = async (
+  data: IUser,
+  file?: IUploadFile
+): Promise<IUser | null> => {
+  //If file uploaded then upload to cloudinary
+  if (file) {
+    const uploadedImg = (await fileUploadHelper.uploadToCloudinary(
+      file
+    )) as ICloudinaryResponse;
+    // console.log(uploadedImg);
+    data.profile_picture = uploadedImg.secure_url;
+  }
+
   const user = await User.create(data);
   return user;
 };
