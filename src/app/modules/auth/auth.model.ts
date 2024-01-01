@@ -14,15 +14,9 @@ const OtpSchema = new Schema<IOtp, OtpModel>(
     createdAt: {
       type: Date,
       default: Date.now,
-      expires: 60 * 1, // 1 minute
+      expires: 60 * 3, // OTP expires in 3 minutes
     },
-  }
-  //   {
-  //     timestamps: true,
-  //     toJSON: {
-  //       virtuals: true,
-  //     },
-  //   }
+  },
 );
 
 export const Otp = model<IOtp, OtpModel>('Otp', OtpSchema);

@@ -19,7 +19,36 @@ const sendOtpZodSchema = z.object({
   }),
 });
 
+const verifyOtpZodSchema = z.object({
+  body: z.object({
+    office_email: z
+      .string({
+        required_error: 'Email is required',
+      })
+      .email({
+        message: 'Invalid email',
+      }),
+    otp: z.string(),
+  }),
+});
+
+const resetPasswordZodSchema = z.object({
+  body: z.object({
+    office_email: z
+      .string({
+        required_error: 'Email is required',
+      })
+      .email({
+        message: 'Invalid email',
+      }),
+    // otp: z.string(),
+    password: z.string().min(6).max(100),
+  }),
+});
+
 export const AuthValidation = {
   loginZodSchema,
   sendOtpZodSchema,
+  verifyOtpZodSchema,
+  resetPasswordZodSchema,
 };

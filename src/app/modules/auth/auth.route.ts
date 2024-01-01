@@ -19,4 +19,14 @@ router.post(
   AuthController.sendOtp
 );
 
+router.post(
+  '/verify-otp',
+  validateRequest(AuthValidation.verifyOtpZodSchema),
+  AuthController.verifyOtp
+);
+
+router.post('/reset-password',
+  validateRequest(AuthValidation.resetPasswordZodSchema),
+ AuthController.resetPassword);
+
 export const AuthRoutes = router;
