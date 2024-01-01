@@ -1,7 +1,9 @@
 import express from 'express';
-import { AuthController } from './auth.controller';
 import validateRequest from '../../middlewares/validateRequest';
+import { AuthController } from './auth.controller';
 import { AuthValidation } from './auth.validation';
+import auth from '../../middlewares/auth';
+import { ENUM_USER_ROLE } from '../../../enums/user';
 const router = express.Router();
 
 // Routes
@@ -25,8 +27,17 @@ router.post(
   AuthController.verifyOtp
 );
 
-router.post('/reset-password',
+router.post(
+  '/reset-password',
   validateRequest(AuthValidation.resetPasswordZodSchema),
- AuthController.resetPassword);
+  AuthController.resetPassword
+);
+
+router.post(
+  '/change-password',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.EMPLOYEE, ENUM_USER_ROLE.HR),
+  validateRequest(AuthValidation.changePasswordZodSchema),
+  AuthController.changePassword
+);
 
 export const AuthRoutes = router;
