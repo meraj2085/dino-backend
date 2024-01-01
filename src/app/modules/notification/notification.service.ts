@@ -1,6 +1,8 @@
 /* eslint-disable prefer-const */
 import { sendMail } from '../../../utils/sendMail';
 import { User } from '../user/user.model';
+import { INotification } from './notification.interface';
+import { notification } from './notification.model';
 
 const sendNotification = async (data: any) => {
   let {
@@ -36,7 +38,6 @@ const sendNotification = async (data: any) => {
     });
   }
 
-
   if (sendEmail) {
     await Promise.all(
       users?.map(async (item: any) => {
@@ -49,14 +50,37 @@ const sendNotification = async (data: any) => {
     );
   }
 
+  // Get today's date
+  const today = new Date();
+
+  // Add 5 days to today's date
+  const afterFiveDays = new Date(today);
+  afterFiveDays.setDate(today.getDate() + 5);
+
+  // Format the result (optional)
+  const formattedDate = afterFiveDays.toISOString().split('T')[0];
+
   if (sendPush) {
-    // send push notification
-    // coming soon
+    await notification.create({
+      title: title,
+      description: description,
+      organization_id: organization_id,
+      user_ids: user_ids,
+      delete_at: formattedDate,
+    });
   }
 
   return true;
 };
 
+const getNotification = async (
+  organization_id: string
+): Promise<INotification[] | null> => {
+  const notifications = await notification.find({ organization_id });
+  return notifications;
+};
+
 export const NotificationService = {
   sendNotification,
+  getNotification,
 };
