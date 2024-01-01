@@ -6,6 +6,7 @@ import httpStatus from 'http-status';
 import pick from '../../../shared/pick';
 import { leaveFilterableFields } from './leave.constant';
 import { paginationFields } from '../../../constants/pagination';
+import { ILeave } from './leave.interface';
 
 const addLeave: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
@@ -48,8 +49,22 @@ const getSingleLeave: RequestHandler = catchAsync(
   }
 );
 
+const updateLeave = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { ...leaveData } = req.body;
+  const result = await LeaveService.updateLeave(id, leaveData);
+
+  sendResponse<ILeave>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Leave updated successfully',
+    data: result,
+  });
+});
+
 export const LeaveController = {
   addLeave,
   getAllLeaves,
   getSingleLeave,
+  updateLeave,
 };

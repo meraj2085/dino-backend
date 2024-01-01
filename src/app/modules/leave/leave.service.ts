@@ -91,8 +91,19 @@ const getSingleLeave = async (id: string): Promise<ILeave | null> => {
   return result;
 };
 
+const updateLeave = async (
+  id: string,
+  payload: Partial<ILeave>
+): Promise<ILeave | null> => {
+  const result = await Leave.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  });
+  return result;
+};
+
 export const LeaveService = {
   addLeave,
   getAllLeaves,
   getSingleLeave,
+  updateLeave,
 };

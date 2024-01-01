@@ -27,5 +27,6 @@ router.get(
 );
 
 router.get('/view/:id', LeaveController.getSingleLeave);
+router.patch('/update/:id', LeaveController.updateLeave);
 
 export const LeaveRoutes = router;
