@@ -101,9 +101,15 @@ const updateLeave = async (
   return result;
 };
 
+const leaveById = async (id: string) => {
+  const result = await Leave.find({ user_id: id });
+  return result;
+};
+
 export const LeaveService = {
   addLeave,
   getAllLeaves,
   getSingleLeave,
   updateLeave,
+  leaveById,
 };

@@ -62,9 +62,23 @@ const updateLeave = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const leaveById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await LeaveService.leaveById(id);
+
+  sendResponse<ILeave[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Leaves retrieved successfully',
+    data: result,
+  });
+});
+
 export const LeaveController = {
   addLeave,
   getAllLeaves,
   getSingleLeave,
   updateLeave,
+  leaveById,
 };

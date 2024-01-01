@@ -17,16 +17,17 @@ router.post(
 );
 router.get(
   '/',
-  auth(
-    ENUM_USER_ROLE.ADMIN,
-    ENUM_USER_ROLE.EMPLOYEE,
-    ENUM_USER_ROLE.HR,
-    ENUM_USER_ROLE.SUPER_ADMIN
-  ),
+  // auth(
+  //   ENUM_USER_ROLE.ADMIN,
+  //   ENUM_USER_ROLE.EMPLOYEE,
+  //   ENUM_USER_ROLE.HR,
+  //   ENUM_USER_ROLE.SUPER_ADMIN
+  // ),
   LeaveController.getAllLeaves
 );
 
 router.get('/view/:id', LeaveController.getSingleLeave);
+router.get('/leaves/:id', LeaveController.leaveById);
 router.patch('/update/:id', LeaveController.updateLeave);
 
 export const LeaveRoutes = router;
