@@ -1,16 +1,19 @@
+import httpStatus from 'http-status';
 import { Secret } from 'jsonwebtoken';
 import config from '../../../config';
-import { jwtHelpers } from '../../../utils/jwtHelper';
-import { IUser } from '../user/user.interface';
-import { User } from '../user/user.model';
 import ApiError from '../../../errors/ApiError';
-import httpStatus from 'http-status';
-import { isPasswordMatch } from '../../../utils/isPasswordMatch';
-import { isUserExist } from '../../../utils/isUserExists';
 import {
   ILoginResponse,
   IRefreshTokenResponse,
 } from '../../../interfaces/common';
+import { generateOTP } from '../../../utils/generateOTP';
+import { isPasswordMatch } from '../../../utils/isPasswordMatch';
+import { isUserExist } from '../../../utils/isUserExists';
+import { jwtHelpers } from '../../../utils/jwtHelper';
+import { IUser } from '../user/user.interface';
+import { User } from '../user/user.model';
+import { Otp } from './auth.model';
+import { sendMail } from '../../../utils/sendMail';
 
 const login = async (payload: IUser): Promise<ILoginResponse> => {
   const { office_email, password } = payload;
@@ -91,7 +94,31 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   };
 };
 
+const sendOtp = async (office_email: string) => {
+  // const user = await isUserExist(office_email, User);
+  // if (!user) {
+  //   throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  // }
+
+  const otp = generateOTP();
+
+  const createdOtp = await Otp.create({
+    office_email,
+    otp,
+  });
+
+  // Send OTP to email
+  await sendMail({
+    to: office_email,
+    subject: 'OTP for reset password',
+    message: `Your OTP is ${otp}. Please do not share it with anyone. OTP will expire in 1 minutes.`,
+  });
+
+  return createdOtp;
+};
+
 export const AuthService = {
   login,
   refreshToken,
+  sendOtp,
 };

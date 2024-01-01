@@ -7,6 +7,19 @@ const loginZodSchema = z.object({
   }),
 });
 
+const sendOtpZodSchema = z.object({
+  body: z.object({
+    office_email: z
+      .string({
+        required_error: 'Email is required',
+      })
+      .email({
+        message: 'Invalid email',
+      }),
+  }),
+});
+
 export const AuthValidation = {
   loginZodSchema,
+  sendOtpZodSchema,
 };

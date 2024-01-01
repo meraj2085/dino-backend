@@ -46,7 +46,22 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const sendOtp = catchAsync(async (req: Request, res: Response) => {
+
+  const { office_email } = req.body;
+  console.log(office_email);
+  const result = await AuthService.sendOtp(office_email);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'OTP sent successfully!',
+    data: result,
+  });
+});
+
 export const AuthController = {
   login,
   refreshToken,
+  sendOtp,
 };
