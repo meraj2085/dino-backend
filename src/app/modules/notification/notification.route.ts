@@ -11,4 +11,10 @@ router.post(
   NotificationController.sendNotification
 );
 
+router.get(
+  '/',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.HR),
+  NotificationController.getNotification
+);
+
 export const NotificationRoutes = router;
