@@ -5,9 +5,9 @@ const notificationSchema = new Schema<INotification>(
   {
     organization_id: { type: String, required: true },
     user_ids: { type: [String], required: true },
+    read_by: { type: [String], default: [] },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    delete_at: { type: String, required: true },
   },
   {
     timestamps: true,
@@ -17,7 +17,7 @@ const notificationSchema = new Schema<INotification>(
   }
 );
 
-export const notification = model<INotification, NotificationModel>(
+export const Notification = model<INotification, NotificationModel>(
   'notification',
   notificationSchema
 );
