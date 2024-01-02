@@ -16,24 +16,6 @@ router.post(
 router.post('/refresh-token', AuthController.refreshToken);
 
 router.post(
-  '/send-otp',
-  validateRequest(AuthValidation.sendOtpZodSchema),
-  AuthController.sendOtp
-);
-
-router.post(
-  '/verify-otp',
-  validateRequest(AuthValidation.verifyOtpZodSchema),
-  AuthController.verifyOtp
-);
-
-router.post(
-  '/reset-password',
-  validateRequest(AuthValidation.resetPasswordZodSchema),
-  AuthController.resetPassword
-);
-
-router.post(
   '/change-password',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.EMPLOYEE, ENUM_USER_ROLE.HR),
   validateRequest(AuthValidation.changePasswordZodSchema),

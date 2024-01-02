@@ -9,6 +9,7 @@ import { NotificationRoutes } from '../modules/notification/notification.route';
 import { OrganizationRoutes } from '../modules/organization/organization.route';
 import { UserRoutes } from '../modules/user/user.route';
 import { LeaveRoutes } from '../modules/leave/Leave.route';
+import { OtpRoutes } from '../modules/otp/otp.route';
 const router = express.Router();
 
 const moduleRoutes = [
@@ -23,6 +24,10 @@ const moduleRoutes = [
   {
     path: '/auth',
     route: AuthRoutes,
+  },
+  {
+    path: '/reset-password',
+    route: OtpRoutes,
   },
   {
     path: '/address',
