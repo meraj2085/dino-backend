@@ -7,14 +7,11 @@ import {
   ILoginResponse,
   IRefreshTokenResponse,
 } from '../../../interfaces/common';
-import { generateOTP } from '../../../utils/generateOTP';
 import { isPasswordMatch } from '../../../utils/isPasswordMatch';
 import { isUserExist } from '../../../utils/isUserExists';
 import { jwtHelpers } from '../../../utils/jwtHelper';
-import { sendMail } from '../../../utils/sendMail';
 import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
-import { Otp } from './auth.model';
 
 const login = async (payload: IUser): Promise<ILoginResponse> => {
   const { office_email, password } = payload;
@@ -95,88 +92,6 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   };
 };
 
-const sendOtp = async (office_email: string) => {
-  const user = await isUserExist(office_email, User);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-
-  const otpData = await Otp.findOne({ office_email });
-  if (otpData) {
-    const currentTime = new Date();
-
-    const remainingTime =
-      3 * 60 * 1000 - (currentTime.getTime() - otpData.createdAt.getTime());
-
-    // Convert remaining time to minutes
-    const remainingMinutes = Math.ceil(remainingTime / (60 * 1000));
-
-    throw new ApiError(
-      httpStatus.NOT_FOUND,
-      `OTP already sent. Please try again after ${remainingMinutes} minute(s).`
-    );
-  }
-
-  const generatedOTP = generateOTP();
-
-  const result = await Otp.create({
-    office_email,
-    otp: generatedOTP,
-  });
-
-  // Send OTP to email
-  if (result) {
-    await sendMail({
-      to: office_email,
-      subject: 'OTP for reset password',
-      message: `Your OTP is ${result.otp}. Please do not share it with anyone. OTP will expire in 3 minutes.`,
-    });
-  }
-
-  return {
-    _id: result._id,
-    office_email: result.office_email,
-    createdAt: result.createdAt,
-  };
-};
-
-const verifyOtp = async (office_email: string, otp: string) => {
-  const otpData = await Otp.findOne({ office_email });
-  if (!otpData) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'OTP expired');
-  }
-
-  if (otpData.otp !== otp) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'OTP is incorrect');
-  }
-
-  return {
-    _id: otpData._id,
-    office_email: otpData.office_email,
-    createdAt: otpData.createdAt,
-  };
-};
-
-const resetPassword = async (office_email: string, password: string) => {
-  const user = await isUserExist(office_email, User);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-
-  // Encrypt password
-  const hashedPassword = await hashingHelper.encrypt_password(password);
-
-  const updatedUser = await User.findOneAndUpdate(
-    { office_email },
-    { password: hashedPassword },
-    {
-      new: true,
-    }
-  ).select('-password');
-
-  return updatedUser;
-};
-
 const changePassword = async (
   userId: string,
   old_password: string,
@@ -217,8 +132,5 @@ const changePassword = async (
 export const AuthService = {
   login,
   refreshToken,
-  sendOtp,
-  verifyOtp,
-  resetPassword,
   changePassword,
 };

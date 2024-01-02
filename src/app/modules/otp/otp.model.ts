@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { IOtp, OtpModel } from './auth.interface';
+import { IOtp, OtpModel } from './otp.interface';
 
 const OtpSchema = new Schema<IOtp, OtpModel>(
   {
@@ -11,12 +11,22 @@ const OtpSchema = new Schema<IOtp, OtpModel>(
       type: String,
       required: true,
     },
-    createdAt: {
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    expiresAt: {
       type: Date,
       default: Date.now,
-      expires: 60 * 3, // OTP expires in 3 minutes
+      expires: 60 * 15, // Document will be deleted after 15 minutes
     },
   },
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
+  }
 );
 
 export const Otp = model<IOtp, OtpModel>('Otp', OtpSchema);
