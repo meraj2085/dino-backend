@@ -5,6 +5,7 @@ import { generateOTP } from '../../../utils/generateOTP';
 import { isUserExist } from '../../../utils/isUserExists';
 import { User } from '../user/user.model';
 import { Otp } from './otp.model';
+import { sendMail } from '../../../utils/sendMail';
 
 const sendOtp = async (office_email: string) => {
   const user = await isUserExist(office_email, User);
@@ -46,14 +47,14 @@ const sendOtp = async (office_email: string) => {
   });
 
   // Send OTP to email
-  /*   if (result) {
+    if (result) {
     await sendMail({
       to: office_email,
       subject: 'OTP for reset password',
       message: `Your OTP is ${result.otp}. Please do not share it with anyone. OTP will expire in 3 minutes.`,
     });
   }
- */
+
   return {
     _id: result._id,
     office_email: result.office_email,
