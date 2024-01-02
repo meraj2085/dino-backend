@@ -1,6 +1,7 @@
 import express from 'express';
 import { AddressRoutes } from '../modules/address/address.route';
 import { AppointmentRoutes } from '../modules/appointment/appointment.route';
+import { AttendanceRoutes } from '../modules/attendance/attendance.route';
 import { AuthRoutes } from '../modules/auth/auth.route';
 import { EventRoutes } from '../modules/event/event.route';
 import { FeedbackRoutes } from '../modules/feedback/feedback.route';
@@ -41,6 +42,10 @@ const moduleRoutes = [
   {
     path: '/event',
     route: EventRoutes,
+  },
+  {
+    path: '/attendance',
+    route: AttendanceRoutes,
   },
 ];
 
