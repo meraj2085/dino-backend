@@ -19,8 +19,8 @@ const sendNotification: RequestHandler = catchAsync(
 
 const getNotification: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const organization_id = req.user?.organization_id;
-    const result = await NotificationService.getNotification(organization_id);
+    const id = req.user?.userId;
+    const result = await NotificationService.getNotification(id);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -31,7 +31,53 @@ const getNotification: RequestHandler = catchAsync(
   }
 );
 
+const getUnreadCount: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const id = req.user?.userId;
+    const result = await NotificationService.getUnreadCount(id);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Unread Notification count fetched successfully',
+      data: result ? result : "0",
+    });
+  }
+);
+
+const deleteMyNotification: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const id = req.user?.userId;
+    const result = await NotificationService.deleteMyNotification(id);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Notification deleted successfully',
+      data: result,
+    });
+  }
+);
+
+const markRead: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const id = req.user?.userId;
+    const notificationId = req.body.notificationId;
+    const result = await NotificationService.markRead(id, notificationId);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Notification deleted successfully',
+      data: result,
+    });
+  }
+);
+
 export const NotificationController = {
   sendNotification,
   getNotification,
+  getUnreadCount,
+  deleteMyNotification,
+  markRead,
 };

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
 import { sendMail } from '../../../utils/sendMail';
 import { User } from '../user/user.model';
 import { INotification } from './notification.interface';
-import { notification } from './notification.model';
+import { Notification } from './notification.model';
 
 const sendNotification = async (data: any) => {
   let {
@@ -50,37 +51,61 @@ const sendNotification = async (data: any) => {
     );
   }
 
-  // Get today's date
-  const today = new Date();
-
-  // Add 5 days to today's date
-  const afterFiveDays = new Date(today);
-  afterFiveDays.setDate(today.getDate() + 5);
-
-  // Format the result (optional)
-  const formattedDate = afterFiveDays.toISOString().split('T')[0];
-
   if (sendPush) {
-    await notification.create({
+    await Notification.create({
       title: title,
       description: description,
       organization_id: organization_id,
       user_ids: user_ids,
-      delete_at: formattedDate,
     });
   }
 
   return true;
 };
 
-const getNotification = async (
-  organization_id: string
-): Promise<INotification[] | null> => {
-  const notifications = await notification.find({ organization_id });
+const getNotification = async (id: string): Promise<INotification[] | null> => {
+  const notifications = await Notification.find({
+    user_ids: { $in: [id] },
+  }).sort({ createdAt: -1 });
   return notifications;
+};
+
+const getUnreadCount = async (id: string): Promise<number> => {
+  const notifications = await Notification.find({
+    user_ids: { $in: [id] },
+    read_by: { $nin: [id] },
+  }).count();
+  return notifications;
+};
+
+const deleteMyNotification = async (id: string) => {
+  const notifications = await Notification.updateMany(
+    {
+      user_ids: { $in: [id] },
+    },
+    {
+      $pull: { user_ids: id },
+    }
+  );
+  return notifications;
+};
+
+const markRead = async (id: string, notificationId: string) => {
+  const notification = await Notification.updateMany(
+    {
+      _id: notificationId,
+    },
+    {
+      $addToSet: { read_by: id },
+    }
+  );
+  return notification;
 };
 
 export const NotificationService = {
   sendNotification,
   getNotification,
+  getUnreadCount,
+  deleteMyNotification,
+  markRead,
 };
