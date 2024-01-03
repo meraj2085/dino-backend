@@ -9,7 +9,6 @@ router.post(
   auth(
     ENUM_USER_ROLE.ADMIN,
     ENUM_USER_ROLE.EMPLOYEE,
-    ENUM_USER_ROLE.HR,
     ENUM_USER_ROLE.SUPER_ADMIN
   ),
   //   validateRequest(LeaveValidation.addLeaveZodSchema),
@@ -20,7 +19,6 @@ router.get(
   // auth(
   //   ENUM_USER_ROLE.ADMIN,
   //   ENUM_USER_ROLE.EMPLOYEE,
-  //   ENUM_USER_ROLE.HR,
   //   ENUM_USER_ROLE.SUPER_ADMIN
   // ),
   LeaveController.getAllLeaves

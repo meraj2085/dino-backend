@@ -17,7 +17,11 @@ router.post('/refresh-token', AuthController.refreshToken);
 
 router.post(
   '/change-password',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.EMPLOYEE, ENUM_USER_ROLE.HR),
+  auth(
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.EMPLOYEE
+  ),
   validateRequest(AuthValidation.changePasswordZodSchema),
   AuthController.changePassword
 );

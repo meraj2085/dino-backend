@@ -12,8 +12,7 @@ router.get(
   auth(
     ENUM_USER_ROLE.ADMIN,
     ENUM_USER_ROLE.SUPER_ADMIN,
-    ENUM_USER_ROLE.EMPLOYEE,
-    ENUM_USER_ROLE.HR
+    ENUM_USER_ROLE.EMPLOYEE
   ),
 
   AttendanceController.myAttendance
@@ -24,8 +23,7 @@ router.get(
   auth(
     ENUM_USER_ROLE.ADMIN,
     ENUM_USER_ROLE.SUPER_ADMIN,
-    ENUM_USER_ROLE.EMPLOYEE,
-    ENUM_USER_ROLE.HR
+    ENUM_USER_ROLE.EMPLOYEE
   ),
   AttendanceController.getAllAttendance
 );
@@ -35,8 +33,7 @@ router.post(
   auth(
     ENUM_USER_ROLE.ADMIN,
     ENUM_USER_ROLE.SUPER_ADMIN,
-    ENUM_USER_ROLE.EMPLOYEE,
-    ENUM_USER_ROLE.HR
+    ENUM_USER_ROLE.EMPLOYEE
   ),
   validateRequest(AttendanceValidation.addAttendanceZodSchema),
   AttendanceController.addAttendance
@@ -47,8 +44,7 @@ router.patch(
   auth(
     ENUM_USER_ROLE.ADMIN,
     ENUM_USER_ROLE.SUPER_ADMIN,
-    ENUM_USER_ROLE.EMPLOYEE,
-    ENUM_USER_ROLE.HR
+    ENUM_USER_ROLE.EMPLOYEE
   ),
   validateRequest(AttendanceValidation.updateAttendanceZodSchema),
   AttendanceController.updateAttendance
