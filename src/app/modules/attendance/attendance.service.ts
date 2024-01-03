@@ -131,16 +131,37 @@ const updateAttendance = async (
 const myAttendance = async (
   userId: string,
   organization_id: string
-): Promise<IAttendance | null> => {
+): Promise<IAttendance[] | null> => {
   try {
+    const currentDate = new Date();
+    const startOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1
+    );
+    const endOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      999
+    );
     const isUser = await User.findOne({ _id: userId, organization_id });
     if (!isUser) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'User does not exist.');
     }
-    const myAttendanceData = await attendance.findOne({
-      user_id: userId,
-      organization_id,
-    });
+    const myAttendanceData = await attendance
+      .find({
+        user_id: userId,
+        organization_id,
+        date: {
+          $gte: startOfMonth.toISOString(),
+          $lt: endOfMonth.toISOString(),
+        },
+      })
+      .sort({ createdAt: -1 });
 
     return myAttendanceData;
   } catch (error) {
