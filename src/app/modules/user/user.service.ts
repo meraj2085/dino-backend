@@ -6,6 +6,7 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import { userFilterableFields } from './user.constant';
 import { IUser, IUserFilters } from './user.interface';
 import { User } from './user.model';
+import { generateEmployeeCode } from './user.utils';
 
 const addUser = async (
   data: IUser,
@@ -19,6 +20,11 @@ const addUser = async (
     // console.log(uploadedImg);
     data.profile_picture = uploadedImg.secure_url;
   }
+
+  //Generate employee code
+  const employee_code = await generateEmployeeCode(data.organization_id ?? '');
+
+  data.employee_code = employee_code;
 
   const user = await User.create(data);
   return user;

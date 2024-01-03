@@ -37,8 +37,9 @@ router.post(
 );
 router.patch(
   '/:id',
-  fileUploadHelper.upload.single('profile_picture'),
   auth(ENUM_USER_ROLE.ADMIN),
+  fileUploadHelper.upload.single('profile_picture'),
+  
   (req: Request, res: Response, next: NextFunction) => {
     // console.log(req.body);
     req.body = UserValidation.updateUserZodSchema.parse(

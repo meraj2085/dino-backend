@@ -1,98 +1,5 @@
 import { z } from 'zod';
 
-// const userSchema = z.object({
-//   organization_id: z.string(),
-//   first_name: z.string(),
-//   last_name: z.string(),
-//   date_of_birth: z.string(),
-//   gender: z.string(),
-//   employment_status: z.enum([
-//     'Contract',
-//     'Intern',
-//     'Temporary',
-//     'Part-time',
-//     'Freelance',
-//   ]),
-//   employee_code: z.string(),
-//   office_email: z.string(),
-//   date_of_joining: z.string(),
-//   department: z.enum([
-//     'HR',
-//     'IT',
-//     'Finance',
-//     'Marketing',
-//     'Sales',
-//     'Operations',
-//   ]),
-//   flat_number: z.string(),
-//   building_name: z.string(),
-//   street: z.string(),
-//   city: z.string(),
-//   landmark: z.string(),
-//   country: z.string(),
-//   state: z.string(),
-//   postal_code: z.string(),
-//   phone_number: z.string(),
-//   other_phone_number: z.string(),
-//   personal_email: z.string(),
-//   bank_name: z.string(),
-//   account_number: z.string(),
-//   branch_name: z.string(),
-//   designation: z.enum([
-//     'Software Engineer',
-//     'Senior Software Engineer',
-//     'Team Lead',
-//     'Project Manager',
-//     'Product Manager',
-//     'CEO',
-//     'CTO',
-//     'COO',
-//     'CFO',
-//     'HR Manager',
-//     'HR Executive',
-//     'HR Intern',
-//     'Marketing Manager',
-//     'Marketing Executive',
-//     'Marketing Intern',
-//     'Sales Manager',
-//     'Sales Executive',
-//     'Sales Intern',
-//     'Finance Manager',
-//     'Finance Executive',
-//     'Finance Intern',
-//     'Operations Manager',
-//     'Operations Executive',
-//     'Operations Intern',
-//   ]),
-//   team: z.enum(['IT', 'Finance', 'Marketing', 'Sales', 'Operations']),
-//   role: z.enum(['Employee', 'Manager', 'Developer', 'Designer', 'Tester']),
-//   manager_id: z.string(),
-//   emergency_contact: z.object({
-//     full_name: z.string(),
-//     phone_number: z.string(),
-//     email: z.string(),
-//     relationship: z.string(),
-//   }),
-//   contract_date: z.string(),
-//   user_type: z
-//     .enum(['super_admin', 'admin', 'employee'])
-
-//     .default('employee'),
-//   password: z.string().default('Dino-123'),
-//   profile_picture: z.string(),
-//   status: z
-//     .enum(['Deleted', 'Disabled', 'Active'])
-
-//     .default('Active'),
-//   is_password_reset: z.boolean().default(false),
-//   salaryDetails: z.object({
-//     basic_salary: z.string(),
-//     total_allowance: z.string(),
-//     annual_bonus: z.string(),
-//     total_ctc: z.string(),
-//   }),
-// });
-
 const addUserZodSchema = z.object({
   // body: z.object({
     organization_id: z.string({ required_error: 'OrganizationId is Required' }),
@@ -104,7 +11,6 @@ const addUserZodSchema = z.object({
       ['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance'],
       { required_error: 'Employment Status is Required' }
     ),
-    employee_code: z.string({ required_error: 'Employee Code is Required' }),
     office_email: z
       .string({ required_error: 'Office Email is Required' })
       .email({ message: 'Invalid Email' }),
@@ -192,13 +98,6 @@ const addUserZodSchema = z.object({
       .default('employee')
       .optional(),
     password: z.string().default('Dino-123').optional(),
-    // profile_picture: z.string({ required_error: 'Profile Picture is Required' }),
-    // status: z
-    //   .enum(['Deleted', 'Disabled', 'Active'], {
-    //     required_error: 'Status is Required',
-    //   })
-    //   .default('Active'),
-    // is_password_reset: z.boolean().default(false),
     salaryDetails: z.object({
       basic_salary: z.string({
         required_error: 'Basic Salary  is Required',
@@ -227,7 +126,6 @@ const updateUserZodSchema = z.object({
     employment_status: z
       .enum(['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance'])
       .optional(),
-    employee_code: z.string().optional(),
     office_email: z.string().optional(),
     date_of_joining: z.string().optional(),
     department: z

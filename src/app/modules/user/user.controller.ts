@@ -11,7 +11,6 @@ import { UserService } from './user.service';
 const addUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const data = req.body;
-
     const file = req.file as IUploadFile;
 
     const result = await UserService.addUser(data, file);
