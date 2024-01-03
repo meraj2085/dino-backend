@@ -100,7 +100,7 @@ const getMyTeam = async (
     _id: userId,
   });
 
-  let manager_id:string | undefined;
+  let manager_id: string | undefined;
 
   if (user?.role === 'Manager') {
     manager_id = userId;
@@ -143,7 +143,7 @@ const getMyTeam = async (
       },
       {
         _id: manager_id,
-      }
+      },
     ],
   });
 
@@ -186,14 +186,14 @@ const updateUser = async (
   organization_id: string,
   file?: IUploadFile
 ): Promise<IUser | null> => {
-    if (file) {
-      const uploadedImg = (await fileUploadHelper.uploadToCloudinary(
-        file
-      )) as ICloudinaryResponse;
-      // console.log(uploadedImg);
-      payload.profile_picture = uploadedImg.secure_url;
-    }
-    
+  if (file) {
+    const uploadedImg = (await fileUploadHelper.uploadToCloudinary(
+      file
+    )) as ICloudinaryResponse;
+    // console.log(uploadedImg);
+    payload.profile_picture = uploadedImg.secure_url;
+  }
+
   const updateUser = await User.findOneAndUpdate(
     { _id: id, organization_id },
     payload,

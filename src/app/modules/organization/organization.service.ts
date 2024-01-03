@@ -6,6 +6,7 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import { organizationFilterableFields } from './organization.constant';
 import { IOrganization, IOrganizationFilters } from './organization.interface';
 import { Organization } from './organization.model';
+import { generateOrganizationCode } from './organization.utils';
 
 const addOrganization = async (
   data: IOrganization,
@@ -18,6 +19,11 @@ const addOrganization = async (
     // console.log(uploadedImg);
     data.profile_picture = uploadedImg.secure_url;
   }
+
+  //Generate organization code
+  const company_code = await generateOrganizationCode();
+
+  data.company_code = company_code;
 
   const organization = await Organization.create(data);
   return organization;
