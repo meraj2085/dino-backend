@@ -7,7 +7,7 @@ const router = express.Router();
 // Routes
 router.get(
   '/',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.HR, ENUM_USER_ROLE.EMPLOYEE),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.EMPLOYEE),
   AddressController.getAllAddress
 );
 
