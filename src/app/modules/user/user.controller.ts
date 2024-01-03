@@ -11,7 +11,6 @@ import { UserService } from './user.service';
 const addUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const data = req.body;
-
     const file = req.file as IUploadFile;
 
     const result = await UserService.addUser(data, file);
@@ -85,7 +84,10 @@ const updateUser: RequestHandler = catchAsync(
     const organization_id = req.user?.organization_id;
     const id = req.params.id;
     const data = req.body;
-    const result = await UserService.updateUser(id, data, organization_id);
+
+    const file = req.file as IUploadFile;
+
+    const result = await UserService.updateUser(id, data, organization_id, file);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,

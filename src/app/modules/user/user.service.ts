@@ -6,6 +6,7 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import { userFilterableFields } from './user.constant';
 import { IUser, IUserFilters } from './user.interface';
 import { User } from './user.model';
+import { generateEmployeeCode } from './user.utils';
 
 const addUser = async (
   data: IUser,
@@ -19,6 +20,11 @@ const addUser = async (
     // console.log(uploadedImg);
     data.profile_picture = uploadedImg.secure_url;
   }
+
+  //Generate employee code
+  const employee_code = await generateEmployeeCode(data.organization_id ?? '');
+
+  data.employee_code = employee_code;
 
   const user = await User.create(data);
   return user;
@@ -94,7 +100,7 @@ const getMyTeam = async (
     _id: userId,
   });
 
-  let manager_id:string | undefined;
+  let manager_id: string | undefined;
 
   if (user?.role === 'Manager') {
     manager_id = userId;
@@ -137,7 +143,7 @@ const getMyTeam = async (
       },
       {
         _id: manager_id,
-      }
+      },
     ],
   });
 
@@ -177,8 +183,17 @@ const getSingleUser = async (
 const updateUser = async (
   id: string,
   payload: Partial<IUser>,
-  organization_id: string
+  organization_id: string,
+  file?: IUploadFile
 ): Promise<IUser | null> => {
+  if (file) {
+    const uploadedImg = (await fileUploadHelper.uploadToCloudinary(
+      file
+    )) as ICloudinaryResponse;
+    // console.log(uploadedImg);
+    payload.profile_picture = uploadedImg.secure_url;
+  }
+
   const updateUser = await User.findOneAndUpdate(
     { _id: id, organization_id },
     payload,
