@@ -1,6 +1,5 @@
 import { UserController } from './user.controller';
 import express, { NextFunction, Request, Response } from 'express';
-import validateRequest from '../../middlewares/validateRequest';
 import { UserValidation } from './user.validation';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import auth from '../../middlewares/auth';
@@ -38,9 +37,18 @@ router.post(
 );
 router.patch(
   '/:id',
+  fileUploadHelper.upload.single('profile_picture'),
   auth(ENUM_USER_ROLE.ADMIN),
-  validateRequest(UserValidation.updateUserZodSchema),
-  UserController.updateUser
+  (req: Request, res: Response, next: NextFunction) => {
+    // console.log(req.body);
+    req.body = UserValidation.updateUserZodSchema.parse(
+      JSON.parse(req.body.data)
+    );
+    return UserController.updateUser(req, res, next);
+  }
+
+  // validateRequest(UserValidation.updateUserZodSchema),
+  // UserController.updateUser
 );
 router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), UserController.deleteUser);
 

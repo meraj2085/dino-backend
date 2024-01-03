@@ -177,8 +177,17 @@ const getSingleUser = async (
 const updateUser = async (
   id: string,
   payload: Partial<IUser>,
-  organization_id: string
+  organization_id: string,
+  file?: IUploadFile
 ): Promise<IUser | null> => {
+    if (file) {
+      const uploadedImg = (await fileUploadHelper.uploadToCloudinary(
+        file
+      )) as ICloudinaryResponse;
+      // console.log(uploadedImg);
+      payload.profile_picture = uploadedImg.secure_url;
+    }
+    
   const updateUser = await User.findOneAndUpdate(
     { _id: id, organization_id },
     payload,
