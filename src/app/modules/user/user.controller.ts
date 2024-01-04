@@ -1,16 +1,19 @@
-import httpStatus from 'http-status';
 import { Request, RequestHandler, Response } from 'express';
-import catchAsync from '../../../shared/catchAsync';
-import sendResponse from '../../../shared/sendResponse';
-import { UserService } from './user.service';
-import pick from '../../../shared/pick';
+import httpStatus from 'http-status';
 import { paginationFields } from '../../../constants/pagination';
+import { IUploadFile } from '../../../interfaces/file';
+import catchAsync from '../../../shared/catchAsync';
+import pick from '../../../shared/pick';
+import sendResponse from '../../../shared/sendResponse';
 import { userFilterableFields } from './user.constant';
+import { UserService } from './user.service';
 
 const addUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const data = req.body;
-    const result = await UserService.addUser(data);
+    const file = req.file as IUploadFile;
+
+    const result = await UserService.addUser(data, file);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -25,12 +28,37 @@ const getUsers: RequestHandler = catchAsync(
     const organization_id = req.user?.organization_id;
     const filters = pick(req.query, userFilterableFields);
     const paginationOptions = pick(req.query, paginationFields);
-    const result = await UserService.getUsers(filters, paginationOptions, organization_id);
+    const result = await UserService.getUsers(
+      filters,
+      paginationOptions,
+      organization_id
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'User fetched successfully',
+      meta: result.meta,
+      data: result.data,
+    });
+  }
+);
+
+const getMyTeam: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    // console.log(req.user)
+    const filters = pick(req.query, userFilterableFields);
+    const paginationOptions = pick(req.query, paginationFields);
+    const result = await UserService.getMyTeam(
+      filters,
+      paginationOptions,
+      req.user?.userId
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Team fetched successfully',
       meta: result.meta,
       data: result.data,
     });
@@ -56,7 +84,10 @@ const updateUser: RequestHandler = catchAsync(
     const organization_id = req.user?.organization_id;
     const id = req.params.id;
     const data = req.body;
-    const result = await UserService.updateUser(id, data, organization_id);
+
+    const file = req.file as IUploadFile;
+
+    const result = await UserService.updateUser(id, data, organization_id, file);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -83,6 +114,7 @@ const deleteUser: RequestHandler = catchAsync(
 export const UserController = {
   addUser,
   getUsers,
+  getMyTeam,
   getSingleUser,
   updateUser,
   deleteUser,

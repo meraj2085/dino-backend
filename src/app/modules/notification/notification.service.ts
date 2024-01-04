@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
 import { sendMail } from '../../../utils/sendMail';
 import { User } from '../user/user.model';
+import { INotification } from './notification.interface';
+import { Notification } from './notification.model';
 
 const sendNotification = async (data: any) => {
   let {
@@ -36,7 +39,6 @@ const sendNotification = async (data: any) => {
     });
   }
 
-
   if (sendEmail) {
     await Promise.all(
       users?.map(async (item: any) => {
@@ -50,13 +52,60 @@ const sendNotification = async (data: any) => {
   }
 
   if (sendPush) {
-    // send push notification
-    // coming soon
+    await Notification.create({
+      title: title,
+      description: description,
+      organization_id: organization_id,
+      user_ids: user_ids,
+    });
   }
 
   return true;
 };
 
+const getNotification = async (id: string): Promise<INotification[] | null> => {
+  const notifications = await Notification.find({
+    user_ids: { $in: [id] },
+  }).sort({ createdAt: -1 });
+  return notifications;
+};
+
+const getUnreadCount = async (id: string): Promise<number> => {
+  const notifications = await Notification.find({
+    user_ids: { $in: [id] },
+    read_by: { $nin: [id] },
+  }).count();
+  return notifications;
+};
+
+const deleteMyNotification = async (id: string) => {
+  const notifications = await Notification.updateMany(
+    {
+      user_ids: { $in: [id] },
+    },
+    {
+      $pull: { user_ids: id },
+    }
+  );
+  return notifications;
+};
+
+const markRead = async (id: string, notificationId: string) => {
+  const notification = await Notification.updateMany(
+    {
+      _id: notificationId,
+    },
+    {
+      $addToSet: { read_by: id },
+    }
+  );
+  return notification;
+};
+
 export const NotificationService = {
   sendNotification,
+  getNotification,
+  getUnreadCount,
+  deleteMyNotification,
+  markRead,
 };

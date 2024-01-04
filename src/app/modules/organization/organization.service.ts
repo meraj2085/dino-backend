@@ -1,13 +1,30 @@
 import { SortOrder } from 'mongoose';
+import { fileUploadHelper } from '../../../helpers/fileUploadHelper';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
+import { ICloudinaryResponse, IUploadFile } from '../../../interfaces/file';
 import { IPaginationOptions } from '../../../interfaces/pagination';
-import { Organization } from './organization.model';
-import { IOrganization, IOrganizationFilters } from './organization.interface';
 import { organizationFilterableFields } from './organization.constant';
+import { IOrganization, IOrganizationFilters } from './organization.interface';
+import { Organization } from './organization.model';
+import { generateOrganizationCode } from './organization.utils';
 
 const addOrganization = async (
-  data: IOrganization
+  data: IOrganization,
+  file?: IUploadFile
 ): Promise<IOrganization | null> => {
+  if (file) {
+    const uploadedImg = (await fileUploadHelper.uploadToCloudinary(
+      file
+    )) as ICloudinaryResponse;
+    // console.log(uploadedImg);
+    data.profile_picture = uploadedImg.secure_url;
+  }
+
+  //Generate organization code
+  const company_code = await generateOrganizationCode();
+
+  data.company_code = company_code;
+
   const organization = await Organization.create(data);
   return organization;
 };
@@ -72,8 +89,17 @@ const getSingleOrganization = async (
 
 const updateOrganization = async (
   id: string,
-  payload: Partial<IOrganization>
+  payload: Partial<IOrganization>,
+  file?: IUploadFile
 ): Promise<IOrganization | null> => {
+  if (file) {
+    const uploadedImg = (await fileUploadHelper.uploadToCloudinary(
+      file
+    )) as ICloudinaryResponse;
+    // console.log(uploadedImg);
+    payload.profile_picture = uploadedImg.secure_url;
+  }
+
   const updatedOrganization = await Organization.findOneAndUpdate(
     { _id: id },
     payload,

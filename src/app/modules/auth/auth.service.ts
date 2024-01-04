@@ -1,16 +1,17 @@
+import httpStatus from 'http-status';
 import { Secret } from 'jsonwebtoken';
 import config from '../../../config';
-import { jwtHelpers } from '../../../utils/jwtHelper';
-import { IUser } from '../user/user.interface';
-import { User } from '../user/user.model';
 import ApiError from '../../../errors/ApiError';
-import httpStatus from 'http-status';
-import { isPasswordMatch } from '../../../utils/isPasswordMatch';
-import { isUserExist } from '../../../utils/isUserExists';
+import { hashingHelper } from '../../../helpers/hashingHelpers';
 import {
   ILoginResponse,
   IRefreshTokenResponse,
 } from '../../../interfaces/common';
+import { isPasswordMatch } from '../../../utils/isPasswordMatch';
+import { isUserExist } from '../../../utils/isUserExists';
+import { jwtHelpers } from '../../../utils/jwtHelper';
+import { IUser } from '../user/user.interface';
+import { User } from '../user/user.model';
 
 const login = async (payload: IUser): Promise<ILoginResponse> => {
   const { office_email, password } = payload;
@@ -91,7 +92,45 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   };
 };
 
+const changePassword = async (
+  userId: string,
+  old_password: string,
+  new_password: string
+) => {
+  const user = await User.findById(userId);
+
+  // console.log(user);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  // Check if password is correct
+  const passwordMatch = await isPasswordMatch(
+    old_password,
+    user.password as string
+  );
+  if (!passwordMatch) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Old password is incorrect');
+  }
+
+  // Encrypt password
+  const hashedPassword = await hashingHelper.encrypt_password(new_password);
+
+  // Update password
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: userId },
+    { password: hashedPassword, is_password_reset: true },
+    {
+      new: true,
+    }
+  ).select('-password');
+
+  return updatedUser;
+};
+
 export const AuthService = {
   login,
   refreshToken,
+  changePassword,
 };

@@ -21,10 +21,20 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrganizationService = void 0;
+const fileUploadHelper_1 = require("../../../helpers/fileUploadHelper");
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
-const organization_model_1 = require("./organization.model");
 const organization_constant_1 = require("./organization.constant");
-const addOrganization = (data) => __awaiter(void 0, void 0, void 0, function* () {
+const organization_model_1 = require("./organization.model");
+const organization_utils_1 = require("./organization.utils");
+const addOrganization = (data, file) => __awaiter(void 0, void 0, void 0, function* () {
+    if (file) {
+        const uploadedImg = (yield fileUploadHelper_1.fileUploadHelper.uploadToCloudinary(file));
+        // console.log(uploadedImg);
+        data.profile_picture = uploadedImg.secure_url;
+    }
+    //Generate organization code
+    const company_code = yield (0, organization_utils_1.generateOrganizationCode)();
+    data.company_code = company_code;
     const organization = yield organization_model_1.Organization.create(data);
     return organization;
 });
@@ -72,7 +82,12 @@ const getSingleOrganization = (id) => __awaiter(void 0, void 0, void 0, function
     const organization = yield organization_model_1.Organization.findById(id);
     return organization;
 });
-const updateOrganization = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+const updateOrganization = (id, payload, file) => __awaiter(void 0, void 0, void 0, function* () {
+    if (file) {
+        const uploadedImg = (yield fileUploadHelper_1.fileUploadHelper.uploadToCloudinary(file));
+        // console.log(uploadedImg);
+        payload.profile_picture = uploadedImg.secure_url;
+    }
     const updatedOrganization = yield organization_model_1.Organization.findOneAndUpdate({ _id: id }, payload, {
         new: true,
     });

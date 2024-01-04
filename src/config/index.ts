@@ -19,4 +19,9 @@ export default {
     nodemailer_email: process.env.NODEMAILER_EMAIL,
     email_app_password: process.env.EMAIL_APP_PASSWORD,
   },
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    apiSecret: process.env.CLOUDINARY_API_SECRET,
+  },
 };

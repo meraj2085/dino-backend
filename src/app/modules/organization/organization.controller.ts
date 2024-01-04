@@ -1,16 +1,20 @@
-import httpStatus from 'http-status';
 import { Request, RequestHandler, Response } from 'express';
-import catchAsync from '../../../shared/catchAsync';
-import sendResponse from '../../../shared/sendResponse';
-import { OrganizationService } from './organization.service';
-import pick from '../../../shared/pick';
+import httpStatus from 'http-status';
 import { paginationFields } from '../../../constants/pagination';
+import { IUploadFile } from '../../../interfaces/file';
+import catchAsync from '../../../shared/catchAsync';
+import pick from '../../../shared/pick';
+import sendResponse from '../../../shared/sendResponse';
 import { organizationFilterableFields } from './organization.constant';
+import { OrganizationService } from './organization.service';
 
 const addOrganization: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const data = req.body;
-    const result = await OrganizationService.addOrganization(data);
+
+    const file = req.file as IUploadFile;
+
+    const result = await OrganizationService.addOrganization(data, file);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -56,7 +60,10 @@ const updateOrganization: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;
     const data = req.body;
-    const result = await OrganizationService.updateOrganization(id, data);
+
+    const file = req.file as IUploadFile;
+
+    const result = await OrganizationService.updateOrganization(id, data,file);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,

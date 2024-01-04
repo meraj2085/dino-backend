@@ -25,18 +25,15 @@ export type IOrganization = {
   registered_postal_code?: string;
   contact_person_first_name?: string;
   contact_person_last_name?: string;
-  contact_person_middle_name?: string;
   contact_person_email?: string;
   contact_person_phone_number?: string;
   account_manager_first_name?: string;
   account_manager_last_name?: string;
-  account_manager_middle_name?: string;
   account_manager_designation?: string;
   account_manager_email?: string;
   account_manager_phone_number?: string;
   billing_contact_person_first_name?: string;
   billing_contact_person_last_name?: string;
-  billing_contact_person_middle_name?: string;
   billing_contact_person_email?: string;
   billing_contact_person_phone_number?: string;
   bank_name?: string;
