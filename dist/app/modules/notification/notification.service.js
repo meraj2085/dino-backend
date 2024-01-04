@@ -10,9 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationService = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
 const sendMail_1 = require("../../../utils/sendMail");
 const user_model_1 = require("../user/user.model");
+const notification_model_1 = require("./notification.model");
 const sendNotification = (data) => __awaiter(void 0, void 0, void 0, function* () {
     let { title, description, user_ids, sendPush = false, sendEmail = false, department, toAll, organization_id, } = data;
     let users = [];
@@ -47,11 +49,48 @@ const sendNotification = (data) => __awaiter(void 0, void 0, void 0, function* (
         })));
     }
     if (sendPush) {
-        // send push notification
-        // coming soon
+        yield notification_model_1.Notification.create({
+            title: title,
+            description: description,
+            organization_id: organization_id,
+            user_ids: user_ids,
+        });
     }
     return true;
 });
+const getNotification = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const notifications = yield notification_model_1.Notification.find({
+        user_ids: { $in: [id] },
+    }).sort({ createdAt: -1 });
+    return notifications;
+});
+const getUnreadCount = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const notifications = yield notification_model_1.Notification.find({
+        user_ids: { $in: [id] },
+        read_by: { $nin: [id] },
+    }).count();
+    return notifications;
+});
+const deleteMyNotification = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const notifications = yield notification_model_1.Notification.updateMany({
+        user_ids: { $in: [id] },
+    }, {
+        $pull: { user_ids: id },
+    });
+    return notifications;
+});
+const markRead = (id, notificationId) => __awaiter(void 0, void 0, void 0, function* () {
+    const notification = yield notification_model_1.Notification.updateMany({
+        _id: notificationId,
+    }, {
+        $addToSet: { read_by: id },
+    });
+    return notification;
+});
 exports.NotificationService = {
     sendNotification,
+    getNotification,
+    getUnreadCount,
+    deleteMyNotification,
+    markRead,
 };

@@ -18,7 +18,7 @@ const OtpSchema = new Schema<IOtp, OtpModel>(
     expiresAt: {
       type: Date,
       default: Date.now,
-      expires: 60 * 15, // Document will be deleted after 15 minutes
+      expires: 60 * 5, // Document will be deleted after 3 minutes
     },
   },
   {

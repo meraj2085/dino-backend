@@ -8,6 +8,23 @@ const loginZodSchema = zod_1.z.object({
         password: zod_1.z.string().min(6).max(100),
     }),
 });
+const changePasswordZodSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        old_password: zod_1.z
+            .string({
+            required_error: 'Old password is required',
+        })
+            .min(6)
+            .max(100),
+        new_password: zod_1.z
+            .string({
+            required_error: 'New password is required',
+        })
+            .min(6)
+            .max(100),
+    }),
+});
 exports.AuthValidation = {
     loginZodSchema,
+    changePasswordZodSchema,
 };

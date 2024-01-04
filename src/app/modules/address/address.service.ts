@@ -58,6 +58,7 @@ const getAllAddress = async (
       'email',
       'phone_number',
       'office_email',
+      'profile_picture',
     ]);
 
   const total = await User.countDocuments(whereConditions);

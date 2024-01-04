@@ -18,7 +18,7 @@ const sendOtp = async (office_email: string) => {
   if (otpData) {
     const currentTime = new Date();
 
-    console.log(otpData, Number(otpData.expiresAt) - Number(currentTime));
+    // console.log(otpData, Number(otpData.expiresAt) - Number(currentTime));
 
     // Convert remaining time to seconds
     const remainingSeconds = Math.ceil(
@@ -38,7 +38,7 @@ const sendOtp = async (office_email: string) => {
   const generatedOTP = generateOTP();
 
   const expiresAt = new Date();
-  expiresAt.setTime(expiresAt.getTime() + 60 * 1000); // 1 minute
+  expiresAt.setTime(expiresAt.getTime() + 30 * 1000); // 30 seconds
 
   const result = await Otp.create({
     office_email,
@@ -51,7 +51,7 @@ const sendOtp = async (office_email: string) => {
     await sendMail({
       to: office_email,
       subject: 'OTP for reset password',
-      message: `Your OTP is ${result.otp}. Please do not share it with anyone. OTP will expire in 3 minutes.`,
+      message: `Your OTP is ${result.otp}. Please do not share it with anyone. OTP will expire in 30 seconds`,
     });
   }
 

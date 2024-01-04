@@ -25,10 +25,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const http_status_1 = __importDefault(require("http-status"));
+const config_1 = __importDefault(require("../../../config"));
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const auth_service_1 = require("./auth.service");
-const config_1 = __importDefault(require("../../../config"));
 const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_service_1.AuthService.login(req.body);
     const { refreshToken } = result, others = __rest(result, ["refreshToken"]);
@@ -58,7 +58,20 @@ const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+const changePassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { old_password, new_password } = req.body;
+    // console.log(req.user, req.body);
+    const result = yield auth_service_1.AuthService.changePassword((_a = req.user) === null || _a === void 0 ? void 0 : _a.userId, old_password, new_password);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Password changed successfully!',
+        data: result,
+    });
+}));
 exports.AuthController = {
     login,
     refreshToken,
+    changePassword,
 };
