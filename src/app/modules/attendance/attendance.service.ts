@@ -118,8 +118,11 @@ const updateAttendance = async (
   payload: Partial<IAttendance>,
   organization_id: string
 ): Promise<IAttendance | null> => {
+  console.log(payload)
+  console.log(id)
+
   const attendanceData = await attendance.findOneAndUpdate(
-    { _id: id, organization_id },
+    { user_id: id, organization_id },
     payload,
     {
       new: true,

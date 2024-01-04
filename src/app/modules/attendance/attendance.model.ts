@@ -5,11 +5,11 @@ const attendanceSchema = new Schema<IAttendance>(
   {
     organization_id: { type: String, required: true },
     user_id: { type: String, required: true },
-    userName: { type: String, required: true },
+    userName: { type: String },
     date: { type: String, default: Date },
     check_in: { type: String, required: true },
-    check_out: { type: String, required: true },
-    is_checkout: { type: Boolean, required: true },
+    check_out: { type: String },
+    is_checkout: { type: Boolean, default: true },
     description: { type: String, required: true },
   },
   {
