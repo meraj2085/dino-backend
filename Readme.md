@@ -1,135 +1,147 @@
-# Dino HR
+<p align="center">
+  <img src="https://res.cloudinary.com/df5c6zeao/image/upload/v1704388977/Dino%20HR/dono.png" alt="Logo" width="150" style="max-width: 200px;">
+</p>
 
-There are three visible types in this HR management back-end segment. They are employees, administrators, and super admin. Super Admin administrators oversee the administration chain and ensure all HR procedures are carried out correctly.  Each employee's work is completely under the administrator's supervision. The back end has completed both the pagination and authentication tasks. additionally, the email otp and the Forget password, make a new password. From the back end, all of these tasks have been completed.
+#
 
-# Tech Stack
-![Logo]()
+**Dino HR** is The HR Management system streamlines organizational processes, empowering Super Admins to manage tasks seamlessly. Admins oversee employee management, communication, and control attendance, leaves, and events. Employees benefit from a user-friendly interface for simplified management. Common features include secure authentication, user profiles, and responsiveness across devices, enhancing overall efficiency and communication. Emphasizing security and comprehensive documentation, the system optimizes human resources management.
 
-# Features
-## User
+## Project Setup
 
-- User can login, signup and log out.
-- User can manage and update their profile.
-- Users can give reviews and ratings for services.
-- User can view booking history, check booking statuses.
-- Feedback forms for users to submit comments and suggestions.
+Follow these steps to set up and run the project:
 
-## Employee
+1. **Clone the repository:**
 
-- Employees can log in, sign up, and log out securely.
-- Employees have access to manage and update their professional profiles.
-- Employees can log their daily attendance 
-- Employees can apply for different types of leave via this Back-end system.
-- Employees have the ability to provide feedback, ratings, and reviews.
+    **For Windows:**
+    ```bash
+    git clone https://github.com/meraj2085/dino-backend.git
+    cd dino-hr
+    ```
 
+    **For macOS:**
+    ```bash
+    gh repo clone https://github.com/meraj2085/dino-backend.git
+    cd dino-hr
+    ```
 
-## Admin
+2. **Install dependencies using [Yarn](https://yarnpkg.com/):**
+    ```bash
+    yarn
+    ```
 
-- Admins are  made by Super Admin.
-- Admin can log in and log out.
-- Admin can manage and update their profile.
-- Admins can add, edit, and manage Employees accounts.
-- Admins can view, edit, delete and manage user requests.
-- Admin can log his daily attendance, and view his and all enployee attendance..
-- Admins can accept, reject, or adjust event schedules as needed.
+3. **Run the project:**
+    ```bash
+    yarn start
+    ```
 
-## Super Admin
-- Super Admin can log in and log out.
-- Super Admin can manage and update their profile.
-- Super Admin can add new admin users to the clients who take our service.
-- Super admin can remove admin account after expiry.
+Make sure to have Git and Yarn installed globally before running the commands above.
 
 
-# API Endpoints
+## Credentials
 
-User Api
+Super Admin
 
+```bash
+  super@admin.com
+  password: Dino-123
 ```
-GET /users
-GET /users/:id
-GET /users/my-team
-post /users
-PATCH /users/:id
-PATCH /users/my-profile
-DELETE /users/:id
 
-```
-Auth Api
+Admin (Dino Corporation)
 
+```bash
+  admin@dino.com
+  password: Dino-123
 ```
-post /login
-post /change-password
-```
-Appointment 
 
+Employee (Dino Corporation)
+
+```bash
+  merajhossain2086@gmail.com
+  password: Dino-123
 ```
-get /appointment
-get /appointment/:id
-post /appointment
-PATCH /appointment/:id
 
 
-```
-Attendance
 
-```
-get /attendance
-get /attendance/:id
-post /attendance
-PATCH /attendance/:id
-```
-Event
+## Tech Stack
 
-```
-get /event
-get /event/:id
-post /event
-PATCH /event/:id
-DELETE /event/:id
-```
-Feedback
+<div align="left">  
+<a href="https://www.typescriptlang.org/" target="_blank"><img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/typescript-original.svg" alt="TypeScript" height="40" /></a>  
+<span style="margin: 0 10px;">&nbsp;</span>
+<a href="https://www.mongodb.com/" target="_blank"><img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/mongodb-original-wordmark.svg" alt="MongoDB" height="40" /></a>  
+<span style="margin: 0 10px;">&nbsp;</span>
+<a href="https://nodejs.org/" target="_blank"><img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/nodejs-original-wordmark.svg" alt="Node.js" height="65" /></a>  
+<span style="margin: 0 10px;">&nbsp;</span>
+<a href="https://expressjs.com/" target="_blank"><img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/express-original-wordmark.svg" alt="Express.js" height="60" /></a>  
+</div>
 
-```
-get /feedback
-get /feedback/:id
-post /feedback
-```
-Leave
 
-```
-get /leave
-get /leave/:id
-get /view/:id
-post /leave
-PATCH /update/leave/:id
-```
-Notification
+## Features
 
-```
-get /notification
-get /getUnreadCount/notification
-post /notification
-get /getUnreadCount/notification
-DELETE /notification
-```
-Organization
+### Super Admin
 
-```
-get /organization
-get /organization/:id
-post /organization
-PATCH /organization/:id
-DELETE /organization/:id
-```
-OTP
+#### Organizations Management
+- Add, view, and update organizations.
+- Assign admin users to different organizations.
 
-```
-post /otp
-post /send-otp/otp
-post /verify-otp/otp
-```
-Address
+#### Bookings Management
+- View and manage booking requests from the "Book a Call" page.
 
-```
-get /address
-```
+#### Feedback Management
+- Access and review feedback provided by users.
+  
+#### Notification
+- Super admin will be notified if there are new bookings or feedback.
+
+### Admin
+
+#### Employee Management
+- Add, view, and update employee details.
+
+#### Notification Management
+- Send notifications to all employees or individual employees.
+
+#### Address Book
+- View a basic address card for all employees in the organization.
+
+#### My Team Section
+- See a list of all employees under my team.
+
+#### Attendance Management
+- View overall attendance.
+- View personal attendance.
+
+#### Leave Management
+- Apply for leaves.
+- View applied leaves.
+- Approve leaves for my organization.
+
+#### Event Management
+- Add events to the organization.
+- View all events in the organization.
+- Maintain a calendar of events.
+
+### Employee
+
+#### Address Book
+- Access a basic address card containing the contact details of all employees.
+
+#### My Team
+- View a list of team members.
+
+#### Attendance Management
+- Add personal attendance.
+- View personal attendance history.
+
+#### Leave Management
+- Apply for leaves.
+- View applied leaves.
+
+#### Event Management
+- View upcoming events.
+- Access a calendar displaying events.
+
+<span style="margin: 10 0;">&nbsp;</span>
+
+<p align="center">
+  <a href="https://dino-hr.vercel.app/" target="_blank">Live Website</a>
+</p>
