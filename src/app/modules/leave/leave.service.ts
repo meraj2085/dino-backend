@@ -72,7 +72,8 @@ const getAllLeaves = async (
   const result = await Leave.find(whereConditions)
     .sort(sortConditions)
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .populate('user_id', 'first_name last_name employee_code');
 
   const total = await Leave.countDocuments(whereConditions);
 
@@ -87,7 +88,10 @@ const getAllLeaves = async (
 };
 
 const getSingleLeave = async (id: string): Promise<ILeave | null> => {
-  const result = await Leave.findById(id);
+  const result = await Leave.findById(id).populate(
+    'user_id',
+    'first_name last_name employee_code'
+  );
   return result;
 };
 
@@ -102,7 +106,10 @@ const updateLeave = async (
 };
 
 const leaveById = async (id: string) => {
-  const result = await Leave.find({ user_id: id });
+  const result = await Leave.find({ user_id: id }).populate(
+    'user_id',
+    'first_name last_name employee_code'
+  );
   return result;
 };
 

@@ -5,7 +5,8 @@ import { ILeave, LeaveModel } from './leave.interface';
 const leaveSchema = new Schema<ILeave>(
   {
     user_id: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     leave_type: {
