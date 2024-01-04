@@ -4,9 +4,16 @@ import { Feedback } from './feedback.model';
 import { feedbackFilterableFields } from './feedback.constant';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IPaginationOptions } from '../../../interfaces/pagination';
+import { Notification } from '../notification/notification.model';
 
 const addFeedback = async (data: IFeedback): Promise<IFeedback | null> => {
   const feedback = await Feedback.create(data);
+  await Notification.create({
+    title: 'New Feedback',
+    description: data?.feedback,
+    organization_id: '0000000000',
+    user_ids: ['658658163210c17553e99488'],
+  });
   return feedback;
 };
 

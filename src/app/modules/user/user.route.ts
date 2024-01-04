@@ -19,7 +19,11 @@ router.get(
 );
 router.get(
   '/:id',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.EMPLOYEE),
+  auth(
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.EMPLOYEE,
+    ENUM_USER_ROLE.SUPER_ADMIN
+  ),
   UserController.getSingleUser
 );
 router.post(
@@ -39,7 +43,7 @@ router.patch(
   '/:id',
   auth(ENUM_USER_ROLE.ADMIN),
   fileUploadHelper.upload.single('profile_picture'),
-  
+
   (req: Request, res: Response, next: NextFunction) => {
     // console.log(req.body);
     req.body = UserValidation.updateUserZodSchema.parse(
