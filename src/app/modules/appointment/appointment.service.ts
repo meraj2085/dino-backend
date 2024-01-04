@@ -4,11 +4,18 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import { appointmentFilterableFields } from './appointment.constant';
 import { IAppointment, IAppointmentFilters } from './appointment.interface';
 import { Appointment } from './appointment.model';
+import { Notification } from '../notification/notification.model';
 
 const addAppointment = async (
   data: IAppointment
 ): Promise<IAppointment | null> => {
   const service = await Appointment.create(data);
+  await Notification.create({
+    title: 'New Appointment',
+    description: data?.message,
+    organization_id: '0000000000',
+    user_ids: ['658658163210c17553e99488'],
+  });
   return service;
 };
 
