@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { IUser } from '../user/user.interface';
 
 export type ILeave = {
-  user_id: string;
+  user_id: Types.ObjectId | IUser;
   leave_type: string;
   from_date: string;
   to_date: string;
