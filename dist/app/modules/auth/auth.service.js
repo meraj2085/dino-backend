@@ -81,7 +81,7 @@ const changePassword = (userId, old_password, new_password) => __awaiter(void 0,
     // Encrypt password
     const hashedPassword = yield hashingHelpers_1.hashingHelper.encrypt_password(new_password);
     // Update password
-    const updatedUser = yield user_model_1.User.findOneAndUpdate({ _id: userId }, { password: hashedPassword }, {
+    const updatedUser = yield user_model_1.User.findOneAndUpdate({ _id: userId }, { password: hashedPassword, is_password_reset: true }, {
         new: true,
     }).select('-password');
     return updatedUser;

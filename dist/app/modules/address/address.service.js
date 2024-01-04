@@ -66,6 +66,7 @@ const getAllAddress = (filters, paginationOptions, organization_id) => __awaiter
         'email',
         'phone_number',
         'office_email',
+        'profile_picture',
     ]);
     const total = yield user_model_1.User.countDocuments(whereConditions);
     return {
