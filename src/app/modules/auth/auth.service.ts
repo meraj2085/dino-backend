@@ -120,7 +120,7 @@ const changePassword = async (
   // Update password
   const updatedUser = await User.findOneAndUpdate(
     { _id: userId },
-    { password: hashedPassword },
+    { password: hashedPassword, is_password_reset: true },
     {
       new: true,
     }
