@@ -6,8 +6,8 @@ const addAttendanceZodSchema = z.object({
     user_id: z.string().nonempty(),
     date: z.string().nonempty(),
     check_in: z.string(),
-    check_out: z.string(),
-    is_checkout: z.boolean(),
+    // check_out: z.string(),
+    // is_checkout: z.boolean(),
     description: z.string(),
   }),
 });
