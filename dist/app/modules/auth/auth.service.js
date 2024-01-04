@@ -13,13 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
-const config_1 = __importDefault(require("../../../config"));
-const jwtHelper_1 = require("../../../utils/jwtHelper");
-const user_model_1 = require("../user/user.model");
-const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
+const config_1 = __importDefault(require("../../../config"));
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
+const hashingHelpers_1 = require("../../../helpers/hashingHelpers");
 const isPasswordMatch_1 = require("../../../utils/isPasswordMatch");
 const isUserExists_1 = require("../../../utils/isUserExists");
+const jwtHelper_1 = require("../../../utils/jwtHelper");
+const user_model_1 = require("../user/user.model");
 const login = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { office_email, password } = payload;
     if (!office_email || !password) {
@@ -66,7 +67,27 @@ const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
         accessToken: newAccessToken,
     };
 });
+const changePassword = (userId, old_password, new_password) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.findById(userId);
+    // console.log(user);
+    if (!user) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
+    }
+    // Check if password is correct
+    const passwordMatch = yield (0, isPasswordMatch_1.isPasswordMatch)(old_password, user.password);
+    if (!passwordMatch) {
+        throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, 'Old password is incorrect');
+    }
+    // Encrypt password
+    const hashedPassword = yield hashingHelpers_1.hashingHelper.encrypt_password(new_password);
+    // Update password
+    const updatedUser = yield user_model_1.User.findOneAndUpdate({ _id: userId }, { password: hashedPassword }, {
+        new: true,
+    }).select('-password');
+    return updatedUser;
+});
 exports.AuthService = {
     login,
     refreshToken,
+    changePassword,
 };

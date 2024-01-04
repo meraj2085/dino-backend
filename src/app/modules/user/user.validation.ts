@@ -28,7 +28,7 @@ const addUserZodSchema = z.object({
   landmark: z.string().optional(),
   country: z.string().optional(),
   state: z.string().optional(),
-  postal_code: z.string({ required_error: 'PostalCode is Required' }),
+  postal_code: z.string().optional(),
   phone_number: z.string({ required_error: 'PhoneNumber is Required' }),
   other_phone_number: z.string().optional(),
   personal_email: z.string().optional(),

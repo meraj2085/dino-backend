@@ -14,15 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const http_status_1 = __importDefault(require("http-status"));
-const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
-const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
-const user_service_1 = require("./user.service");
-const pick_1 = __importDefault(require("../../../shared/pick"));
 const pagination_1 = require("../../../constants/pagination");
+const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
+const pick_1 = __importDefault(require("../../../shared/pick"));
+const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const user_constant_1 = require("./user.constant");
+const user_service_1 = require("./user.service");
 const addUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
-    const result = yield user_service_1.UserService.addUser(data);
+    const file = req.file;
+    const result = yield user_service_1.UserService.addUser(data, file);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -44,10 +45,24 @@ const getUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 
         data: result.data,
     });
 }));
-const getSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyTeam = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
+    // console.log(req.user)
+    const filters = (0, pick_1.default)(req.query, user_constant_1.userFilterableFields);
+    const paginationOptions = (0, pick_1.default)(req.query, pagination_1.paginationFields);
+    const result = yield user_service_1.UserService.getMyTeam(filters, paginationOptions, (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Team fetched successfully',
+        meta: result.meta,
+        data: result.data,
+    });
+}));
+const getSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
     const id = req.params.id;
-    const organization_id = (_b = req.user) === null || _b === void 0 ? void 0 : _b.organization_id;
+    const organization_id = (_c = req.user) === null || _c === void 0 ? void 0 : _c.organization_id;
     const result = yield user_service_1.UserService.getSingleUser(id, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -57,11 +72,12 @@ const getSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    const organization_id = (_c = req.user) === null || _c === void 0 ? void 0 : _c.organization_id;
+    var _d;
+    const organization_id = (_d = req.user) === null || _d === void 0 ? void 0 : _d.organization_id;
     const id = req.params.id;
     const data = req.body;
-    const result = yield user_service_1.UserService.updateUser(id, data, organization_id);
+    const file = req.file;
+    const result = yield user_service_1.UserService.updateUser(id, data, organization_id, file);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -70,8 +86,8 @@ const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
     });
 }));
 const deleteUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d;
-    const organization_id = (_d = req.user) === null || _d === void 0 ? void 0 : _d.organization_id;
+    var _e;
+    const organization_id = (_e = req.user) === null || _e === void 0 ? void 0 : _e.organization_id;
     const id = req.params.id;
     const result = yield user_service_1.UserService.deleteUser(id, organization_id);
     (0, sendResponse_1.default)(res, {
@@ -84,6 +100,7 @@ const deleteUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 exports.UserController = {
     addUser,
     getUsers,
+    getMyTeam,
     getSingleUser,
     updateUser,
     deleteUser,
