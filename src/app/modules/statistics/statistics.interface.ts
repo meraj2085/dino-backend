@@ -3,6 +3,8 @@ export type ISuperAdminStats = {
   adminUsers: number;
   employees: number;
   bookings: number;
+  employeesByGender: { name: string; value: number }[];
+  activeByDate: { date: string; count: number }[];
 };
 
 export type IAdminStats = {
@@ -10,6 +12,8 @@ export type IAdminStats = {
   leaves: number;
   events: number;
   attendance: number;
+  employeesByGender: { name: string, value: number }[];
+  activeByDate: { date: string, count: number }[];
 };
 
 export type IEmployeeStats = {

@@ -103,15 +103,7 @@ const getMyTeam = async (
   let manager_id: string | undefined;
 
   if (user?.role === 'Manager') {
-    const teamSize = await User.countDocuments({
-      manager_id: userId,
-    });
-    // if there is no one under his team then set manager_id to his manager_id
-    if (teamSize === 0) {
-      manager_id = user?.manager_id;
-    } else {
-      manager_id = userId;
-    }
+    manager_id = userId;
   } else {
     manager_id = user?.manager_id;
   }

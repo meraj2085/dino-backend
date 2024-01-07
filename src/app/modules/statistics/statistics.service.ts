@@ -16,11 +16,58 @@ const getSuperAdminStats = async (): Promise<ISuperAdminStats | null> => {
   const employees = await User.countDocuments({ user_type: 'employee' });
   const bookings = await Appointment.countDocuments();
 
+  const employeesByGender = await User.aggregate([
+    { $match: { user_type: 'employee' } },
+    {
+      $group: {
+        _id: '$gender',
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        name: '$_id',
+        value: '$count',
+      },
+    },
+  ]);
+
+  const activeEmployees = await attendance.aggregate([
+    {
+      $match: {
+        is_checkout: true,
+      },
+    },
+    {
+      $group: {
+        _id: '$date',
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        date: '$_id',
+        count: 1,
+      },
+    },
+  ]);
+
+  const activeByDate = activeEmployees.map(
+    (employee: { date: string; count: number }) => ({
+      date: employee.date,
+      count: employee.count,
+    })
+  );
+
   return {
     organizations,
     adminUsers,
     employees,
     bookings,
+    employeesByGender,
+    activeByDate,
   };
 };
 
@@ -35,11 +82,61 @@ const getAdminStats = async (
   const events = await Event.countDocuments({ organization_id });
   const attend = await attendance.countDocuments({ organization_id });
 
+  const employeesByGender = await User.aggregate([
+    { $match: { organization_id, user_type: 'employee' } },
+    {
+      $group: {
+        _id: '$gender',
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        name: '$_id',
+        value: '$count',
+      },
+    },
+  ]);
+
+  const activeEmployees = await attendance.aggregate([
+    {
+      $match: {
+        is_checkout: true,
+        organization_id,
+      },
+    },
+    {
+      $group: {
+        _id: '$date',
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        date: '$_id',
+        count: 1,
+      },
+    },
+  ]);
+
+  const activeByDate = activeEmployees.map(
+    (employee: { date: string; count: number }) => ({
+      date: employee.date,
+      count: employee.count,
+    })
+  );
+
+  // console.log(activeByData);
+
   return {
     employees,
     leaves,
     events,
     attendance: attend,
+    employeesByGender,
+    activeByDate,
   };
 };
 
@@ -47,28 +144,18 @@ const getEmployeeStats = async (
   user_id: string,
   organization_id: string
 ): Promise<IEmployeeStats | null> => {
-
-  
   const user = await User.findOne({
     _id: user_id,
   });
   // console.log(user);
-  
-let manager_id: string | undefined;
-if (user?.role === 'Manager') {
-  const teamSize = await User.countDocuments({
-    manager_id: user_id,
-  });
-  // if there is no one under his team then set manager_id to his manager_id
-  if (teamSize === 0) {
-    manager_id = user?.manager_id;
-  } else {
+
+  let manager_id: string | undefined;
+  if (user?.role === 'Manager') {
     manager_id = user_id;
+  } else {
+    manager_id = user?.manager_id;
   }
-} else {
-  manager_id = user?.manager_id;
-}
-  
+
   const empAttendance = await attendance.countDocuments({
     user_id,
     organization_id,
@@ -90,7 +177,7 @@ if (user?.role === 'Manager') {
     organization_id,
     from_date: { $gte: new Date().toISOString() },
   });
-  
+
   return {
     attendance: empAttendance,
     leaves,
