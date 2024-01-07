@@ -10,6 +10,7 @@ import { OrganizationRoutes } from '../modules/organization/organization.route';
 import { UserRoutes } from '../modules/user/user.route';
 import { LeaveRoutes } from '../modules/leave/Leave.route';
 import { OtpRoutes } from '../modules/otp/otp.route';
+import { StatisticsRoutes } from '../modules/statistics/statistics.route';
 const router = express.Router();
 
 const moduleRoutes = [
@@ -50,15 +51,16 @@ const moduleRoutes = [
     route: EventRoutes,
   },
   {
-
     path: '/attendance',
     route: AttendanceRoutes,
   },
   {
-
     path: '/leave',
     route: LeaveRoutes,
-
+  },
+  {
+    path: '/statistics',
+    route: StatisticsRoutes ,
   },
 ];
 
