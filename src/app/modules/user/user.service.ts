@@ -139,7 +139,7 @@ const getMyTeam = async (
   andConditions.push({
     $or: [
       {
-        manager_id,
+        manager_id: manager_id,
       },
       {
         _id: manager_id,
