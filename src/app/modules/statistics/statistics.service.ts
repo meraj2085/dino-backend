@@ -52,6 +52,11 @@ const getSuperAdminStats = async (): Promise<ISuperAdminStats | null> => {
         count: 1,
       },
     },
+    {
+      $sort: {
+        date: 1,
+      },
+    },
   ]);
 
   const activeByDate = activeEmployees.map(
@@ -117,6 +122,11 @@ const getAdminStats = async (
         _id: 0,
         date: '$_id',
         count: 1,
+      },
+    },
+    {
+      $sort: {
+        date: 1,
       },
     },
   ]);
