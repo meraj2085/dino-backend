@@ -25,7 +25,6 @@ router.post(
 );
 router.patch(
   '/:id',
-  
   fileUploadHelper.upload.single('profile_picture'),
 
   (req: Request, res: Response, next: NextFunction) => {
