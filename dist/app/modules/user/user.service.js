@@ -125,7 +125,7 @@ const getMyTeam = (filters, paginationOptions, userId) => __awaiter(void 0, void
     andConditions.push({
         $or: [
             {
-                manager_id,
+                manager_id: manager_id,
             },
             {
                 _id: manager_id,
