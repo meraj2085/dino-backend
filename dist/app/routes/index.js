@@ -15,6 +15,7 @@ const organization_route_1 = require("../modules/organization/organization.route
 const user_route_1 = require("../modules/user/user.route");
 const Leave_route_1 = require("../modules/leave/Leave.route");
 const otp_route_1 = require("../modules/otp/otp.route");
+const statistics_route_1 = require("../modules/statistics/statistics.route");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -60,6 +61,10 @@ const moduleRoutes = [
     {
         path: '/leave',
         route: Leave_route_1.LeaveRoutes,
+    },
+    {
+        path: '/statistics',
+        route: statistics_route_1.StatisticsRoutes,
     },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

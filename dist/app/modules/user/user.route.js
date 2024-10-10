@@ -14,7 +14,7 @@ const router = express_1.default.Router();
 // Routes
 router.get('/', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN, user_1.ENUM_USER_ROLE.EMPLOYEE), user_controller_1.UserController.getUsers);
 router.get('/my-team', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN, user_1.ENUM_USER_ROLE.EMPLOYEE), user_controller_1.UserController.getMyTeam);
-router.get('/:id', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN, user_1.ENUM_USER_ROLE.EMPLOYEE), user_controller_1.UserController.getSingleUser);
+router.get('/:id', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN, user_1.ENUM_USER_ROLE.EMPLOYEE, user_1.ENUM_USER_ROLE.SUPER_ADMIN), user_controller_1.UserController.getSingleUser);
 router.post('/', (0, auth_1.default)(user_1.ENUM_USER_ROLE.SUPER_ADMIN, user_1.ENUM_USER_ROLE.ADMIN), fileUploadHelper_1.fileUploadHelper.upload.single('profile_picture'), (req, res, next) => {
     // console.log(req.body);
     req.body = user_validation_1.UserValidation.addUserZodSchema.parse(JSON.parse(req.body.data));

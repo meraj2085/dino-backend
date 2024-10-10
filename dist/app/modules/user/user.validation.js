@@ -8,7 +8,7 @@ const addUserZodSchema = zod_1.z.object({
     last_name: zod_1.z.string({ required_error: 'LastName is Required' }),
     date_of_birth: zod_1.z.string({ required_error: 'DateOfBirth is Required' }),
     gender: zod_1.z.string({ required_error: 'Gender is Required' }),
-    employment_status: zod_1.z.enum(['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance'], { required_error: 'Employment Status is Required' }),
+    employment_status: zod_1.z.enum(['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance', 'Full-time'], { required_error: 'Employment Status is Required' }),
     office_email: zod_1.z
         .string({ required_error: 'Office Email is Required' })
         .email({ message: 'Invalid Email' }),
@@ -103,7 +103,7 @@ const updateUserZodSchema = zod_1.z.object({
     date_of_birth: zod_1.z.string().optional(),
     gender: zod_1.z.string().optional(),
     employment_status: zod_1.z
-        .enum(['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance'])
+        .enum(['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance', 'Full-time'])
         .optional(),
     office_email: zod_1.z.string().optional(),
     date_of_joining: zod_1.z.string().optional(),

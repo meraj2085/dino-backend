@@ -24,8 +24,15 @@ exports.AppointmentService = void 0;
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const appointment_constant_1 = require("./appointment.constant");
 const appointment_model_1 = require("./appointment.model");
+const notification_model_1 = require("../notification/notification.model");
 const addAppointment = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const service = yield appointment_model_1.Appointment.create(data);
+    yield notification_model_1.Notification.create({
+        title: 'New Appointment',
+        description: data === null || data === void 0 ? void 0 : data.message,
+        organization_id: '0000000000',
+        user_ids: ['658658163210c17553e99488'],
+    });
     return service;
 });
 const getSingleAppointment = (id) => __awaiter(void 0, void 0, void 0, function* () {

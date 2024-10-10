@@ -24,8 +24,15 @@ exports.FeedbackService = void 0;
 const feedback_model_1 = require("./feedback.model");
 const feedback_constant_1 = require("./feedback.constant");
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
+const notification_model_1 = require("../notification/notification.model");
 const addFeedback = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const feedback = yield feedback_model_1.Feedback.create(data);
+    yield notification_model_1.Notification.create({
+        title: 'New Feedback',
+        description: data === null || data === void 0 ? void 0 : data.feedback,
+        organization_id: '0000000000',
+        user_ids: ['658658163210c17553e99488'],
+    });
     return feedback;
 });
 const getAllFeedback = (filters, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
