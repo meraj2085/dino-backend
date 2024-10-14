@@ -7,6 +7,8 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { leaveFilterableFields } from './leave.constant';
 import { SortOrder } from 'mongoose';
+import { IReq_user } from '../../../interfaces/common';
+import { User } from '../user/user.model';
 
 const addLeave = async (data: ILeave): Promise<ILeave | null> => {
   const toDate: any = new Date(data.to_date);
@@ -37,8 +39,10 @@ const addLeave = async (data: ILeave): Promise<ILeave | null> => {
 
 const getAllLeaves = async (
   filters: ILeaveFilters,
-  paginationOptions: IPaginationOptions
+  paginationOptions: IPaginationOptions,
+  req_user: IReq_user
 ) => {
+  const { user_type, role, userId, organization_id } = req_user;
   const { searchTerm, ...filtersData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
@@ -66,6 +70,20 @@ const getAllLeaves = async (
   if (sortBy && sortOrder) {
     sortConditions[sortBy] = sortOrder;
   }
+
+  andConditions.push({
+    organization_id: organization_id,
+  });
+
+  // Get only leaves where the user's manager_id is the current manager's userId
+  if (user_type === 'employee' && role === 'Manager') {
+    andConditions.push({
+      user_id: {
+        $in: await User.find({ manager_id: userId }).select('_id'),
+      },
+    });
+  }
+
   const whereConditions =
     andConditions.length > 0 ? { $and: andConditions } : {};
 

@@ -23,7 +23,7 @@ const leaveSchema = new Schema<ILeave>(
     organization_id: String,
     status: {
       type: String,
-      enum: ['Applied', 'Accepted', 'Rejected', 'Cancelled'],
+      enum: ['Applied', 'Accepted', 'Rejected', 'Cancelled', 'Expired'],
       default: 'Applied',
     },
   },

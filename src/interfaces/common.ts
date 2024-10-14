@@ -23,3 +23,12 @@ export type ILoginResponse = {
 export type IRefreshTokenResponse = {
   accessToken: string;
 };
+
+export type IReq_user = {
+  userId?: string;
+  user_type?: string;
+  organization_id?: string;
+  role?: string;
+  iat?: number;
+  exp?: number;
+};

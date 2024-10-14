@@ -4,9 +4,10 @@ import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { ICloudinaryResponse, IUploadFile } from '../../../interfaces/file';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { userFilterableFields } from './user.constant';
-import { IReq_user, IUser, IUserFilters } from './user.interface';
+import { IUser, IUserFilters } from './user.interface';
 import { User } from './user.model';
 import { generateEmployeeCode } from './user.utils';
+import { IReq_user } from '../../../interfaces/common';
 
 const addUser = async (
   data: IUser,
