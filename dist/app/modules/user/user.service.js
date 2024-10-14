@@ -87,7 +87,8 @@ const getUsers = (filters, paginationOptions, organization_id) => __awaiter(void
         data: result,
     };
 });
-const getMyTeam = (filters, paginationOptions, userId) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyTeam = (filters, paginationOptions, req_user) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req_user === null || req_user === void 0 ? void 0 : req_user.userId;
     const user = yield user_model_1.User.findOne({
         _id: userId,
     });
@@ -132,12 +133,30 @@ const getMyTeam = (filters, paginationOptions, userId) => __awaiter(void 0, void
             },
         ],
     });
+    andConditions.push({
+        _id: { $ne: userId },
+    });
     const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
     const result = yield user_model_1.User.find(whereConditions)
         .sort(sortConditions)
         .skip(skip)
         .limit(limit)
-        .select('-password');
+        .select([
+        // '-password',
+        'first_name',
+        'last_name',
+        'office_email',
+        'phone_number',
+        'gender',
+        'employment_status',
+        'employee_code',
+        'office_email',
+        'department',
+        'designation',
+        'team',
+        'role',
+        'profile_picture',
+    ]);
     const total = yield user_model_1.User.countDocuments(whereConditions);
     return {
         meta: {

@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isUserExist = void 0;
 const isUserExist = function (office_email, UserDb) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield UserDb.findOne({ office_email, status: 'Active' }, { _id: 1, password: 1, user_type: 1, office_email: 1, organization_id: 1 }).lean();
+        return yield UserDb.findOne({ office_email, status: 'Active' }, { _id: 1, password: 1, user_type: 1, office_email: 1, organization_id: 1, role: 1 }).lean();
     });
 };
 exports.isUserExist = isUserExist;
