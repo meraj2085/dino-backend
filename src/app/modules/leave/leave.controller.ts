@@ -64,7 +64,6 @@ const updateLeave = catchAsync(async (req: Request, res: Response) => {
 
 const leaveById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-
   const result = await LeaveService.leaveById(id);
 
   sendResponse<ILeave[]>(res, {

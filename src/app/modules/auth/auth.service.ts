@@ -35,9 +35,9 @@ const login = async (payload: IUser): Promise<ILoginResponse> => {
   }
 
   //create access token & refresh token
-  const { _id: userId, user_type, organization_id } = user;
+  const { _id: userId, user_type, organization_id, role } = user;
   const accessToken = jwtHelpers.createToken(
-    { userId, user_type, organization_id },
+    { userId, user_type, organization_id, role },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );

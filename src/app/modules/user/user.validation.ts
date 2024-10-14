@@ -7,7 +7,7 @@ const addUserZodSchema = z.object({
   date_of_birth: z.string({ required_error: 'DateOfBirth is Required' }),
   gender: z.string({ required_error: 'Gender is Required' }),
   employment_status: z.enum(
-    ['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance'],
+    ['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance', 'Full-time'],
     { required_error: 'Employment Status is Required' }
   ),
   office_email: z
@@ -113,7 +113,7 @@ const updateUserZodSchema = z.object({
     date_of_birth: z.string().optional(),
     gender: z.string().optional(),
     employment_status: z
-      .enum(['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance'])
+      .enum(['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance', 'Full-time'])
       .optional(),
     office_email: z.string().optional(),
     date_of_joining: z.string().optional(),
