@@ -10,7 +10,7 @@ export type IUser = {
   employee_code?: string;
   office_email?: string;
   date_of_joining?: string;
-  department?: string; 
+  department?: string;
   flat_number?: string;
   building_name?: string;
   street?: string;
@@ -57,4 +57,13 @@ export type IUserFilters = {
   first_name?: string;
   middle_name?: string;
   last_name?: string;
+};
+
+export type IReq_user = {
+  userId?: string;
+  user_type?: string;
+  organization_id?: string;
+  role?: string;
+  iat?: number;
+  exp?: number;
 };

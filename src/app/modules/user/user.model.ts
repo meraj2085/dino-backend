@@ -13,7 +13,10 @@ const UserSchema = new Schema<IUser, UserModel>(
     gender: String,
     employment_status: String, // ['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance']
     employee_code: String, // [EMP00001]
-    office_email: String,
+    office_email: {
+      type: String,
+      unique: true,
+    },
     date_of_joining: String,
     department: String, // ['HR', 'IT', 'Finance', 'Marketing', 'Sales', 'Operations']
     flat_number: String,
