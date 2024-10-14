@@ -66,6 +66,14 @@ const getSingleLeave: RequestHandler = catchAsync(
 );
 
 const updateLeave = catchAsync(async (req: Request, res: Response) => {
+  const req_user = req.user;
+  if (req_user?.user_type === 'employee' && req_user?.role !== 'Manager') {
+    return sendResponse(res, {
+      statusCode: httpStatus.UNAUTHORIZED,
+      success: false,
+      message: 'Unauthorized',
+    });
+  }
   const { id } = req.params;
   const { ...leaveData } = req.body;
   const result = await LeaveService.updateLeave(id, leaveData);
