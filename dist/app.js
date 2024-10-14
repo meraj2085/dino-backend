@@ -18,6 +18,7 @@ const globalErrorHandler_1 = __importDefault(require("./app/middlewares/globalEr
 const routes_1 = __importDefault(require("./app/routes"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const handleNotFoundError_1 = __importDefault(require("./errors/handleNotFoundError"));
+const cornJobs_1 = __importDefault(require("./app/cornJobs"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 // Parser
@@ -33,6 +34,8 @@ app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         message: 'Working successfully!',
     });
 }));
+// Cron jobs
+(0, cornJobs_1.default)();
 // Global Error Handler
 app.use(globalErrorHandler_1.default);
 // Handle not found routes

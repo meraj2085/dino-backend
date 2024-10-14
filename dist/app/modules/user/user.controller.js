@@ -46,11 +46,18 @@ const getUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 
     });
 }));
 const getMyTeam = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
     // console.log(req.user)
     const filters = (0, pick_1.default)(req.query, user_constant_1.userFilterableFields);
     const paginationOptions = (0, pick_1.default)(req.query, pagination_1.paginationFields);
-    const result = yield user_service_1.UserService.getMyTeam(filters, paginationOptions, (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId);
+    const req_user = req === null || req === void 0 ? void 0 : req.user;
+    if (!req_user) {
+        return (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.UNAUTHORIZED,
+            success: false,
+            message: 'Unauthorized',
+        });
+    }
+    const result = yield user_service_1.UserService.getMyTeam(filters, paginationOptions, req_user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -60,9 +67,9 @@ const getMyTeam = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
     });
 }));
 const getSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
+    var _b;
     const id = req.params.id;
-    const organization_id = (_c = req.user) === null || _c === void 0 ? void 0 : _c.organization_id;
+    const organization_id = (_b = req.user) === null || _b === void 0 ? void 0 : _b.organization_id;
     const result = yield user_service_1.UserService.getSingleUser(id, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -72,8 +79,8 @@ const getSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d;
-    const organization_id = (_d = req.user) === null || _d === void 0 ? void 0 : _d.organization_id;
+    var _c;
+    const organization_id = (_c = req.user) === null || _c === void 0 ? void 0 : _c.organization_id;
     const id = req.params.id;
     const data = req.body;
     const file = req.file;
@@ -86,8 +93,8 @@ const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
     });
 }));
 const deleteUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e;
-    const organization_id = (_e = req.user) === null || _e === void 0 ? void 0 : _e.organization_id;
+    var _d;
+    const organization_id = (_d = req.user) === null || _d === void 0 ? void 0 : _d.organization_id;
     const id = req.params.id;
     const result = yield user_service_1.UserService.deleteUser(id, organization_id);
     (0, sendResponse_1.default)(res, {

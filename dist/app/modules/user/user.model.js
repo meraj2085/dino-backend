@@ -25,7 +25,10 @@ const UserSchema = new mongoose_1.Schema({
     gender: String,
     employment_status: String,
     employee_code: String,
-    office_email: String,
+    office_email: {
+        type: String,
+        unique: true,
+    },
     date_of_joining: String,
     department: String,
     flat_number: String,

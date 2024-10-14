@@ -18,7 +18,7 @@ router.get(
   '/',
   auth(
     ENUM_USER_ROLE.ADMIN,
-    ENUM_USER_ROLE.EMPLOYEE,
+    ENUM_USER_ROLE.EMPLOYEE
     // ENUM_USER_ROLE.SUPER_ADMIN
   ),
   LeaveController.getAllLeaves
@@ -26,6 +26,10 @@ router.get(
 
 router.get('/view/:id', LeaveController.getSingleLeave);
 router.get('/leaves/:id', LeaveController.leaveById);
-router.patch('/update/:id', LeaveController.updateLeave);
+router.patch(
+  '/update/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.EMPLOYEE),
+  LeaveController.updateLeave
+);
 
 export const LeaveRoutes = router;
