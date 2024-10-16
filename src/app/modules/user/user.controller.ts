@@ -49,10 +49,19 @@ const getMyTeam: RequestHandler = catchAsync(
     // console.log(req.user)
     const filters = pick(req.query, userFilterableFields);
     const paginationOptions = pick(req.query, paginationFields);
+    const req_user = req?.user;
+    if (!req_user) {
+      return sendResponse(res, {
+        statusCode: httpStatus.UNAUTHORIZED,
+        success: false,
+        message: 'Unauthorized',
+      });
+    }
+
     const result = await UserService.getMyTeam(
       filters,
       paginationOptions,
-      req.user?.userId
+      req_user
     );
 
     sendResponse(res, {

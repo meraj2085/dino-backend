@@ -7,6 +7,7 @@ import { userFilterableFields } from './user.constant';
 import { IUser, IUserFilters } from './user.interface';
 import { User } from './user.model';
 import { generateEmployeeCode } from './user.utils';
+import { IReq_user } from '../../../interfaces/common';
 
 const addUser = async (
   data: IUser,
@@ -94,8 +95,9 @@ const getUsers = async (
 const getMyTeam = async (
   filters: IUserFilters,
   paginationOptions: IPaginationOptions,
-  userId: string
+  req_user: IReq_user
 ) => {
+  const userId = req_user?.userId;
   const user = await User.findOne({
     _id: userId,
   });
@@ -147,6 +149,10 @@ const getMyTeam = async (
     ],
   });
 
+  andConditions.push({
+    _id: { $ne: userId },
+  });
+
   const whereConditions =
     andConditions.length > 0 ? { $and: andConditions } : {};
 
@@ -154,7 +160,22 @@ const getMyTeam = async (
     .sort(sortConditions)
     .skip(skip)
     .limit(limit)
-    .select('-password');
+    .select([
+      // '-password',
+      'first_name',
+      'last_name',
+      'office_email',
+      'phone_number',
+      'gender',
+      'employment_status',
+      'employee_code',
+      'office_email',
+      'department',
+      'designation',
+      'team',
+      'role',
+      'profile_picture',
+    ]);
 
   const total = await User.countDocuments(whereConditions);
 

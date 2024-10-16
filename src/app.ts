@@ -4,6 +4,7 @@ import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import routes from './app/routes';
 import cookieParser from 'cookie-parser';
 import handleNotFoundError from './errors/handleNotFoundError';
+import cronJobs from './app/cornJobs';
 
 const app: Application = express();
 app.use(cors());
@@ -23,6 +24,9 @@ app.get('/', async (req: Request, res: Response) => {
     message: 'Working successfully!',
   });
 });
+
+// Cron jobs
+cronJobs();
 
 // Global Error Handler
 app.use(globalErrorHandler);

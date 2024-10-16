@@ -10,7 +10,7 @@ export type IUser = {
   employee_code?: string;
   office_email?: string;
   date_of_joining?: string;
-  department?: string; 
+  department?: string;
   flat_number?: string;
   building_name?: string;
   street?: string;

@@ -22,9 +22,25 @@ const addLeave: RequestHandler = catchAsync(
 );
 const getAllLeaves: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
+    const req_user = req.user;
+    if (
+      !req_user ||
+      (req_user?.user_type === 'employee' && req_user?.role !== 'Manager')
+    ) {
+      return sendResponse(res, {
+        statusCode: httpStatus.UNAUTHORIZED,
+        success: false,
+        message: 'Unauthorized',
+      });
+    }
+
     const filters = pick(req.query, leaveFilterableFields);
     const paginationOptions = pick(req.query, paginationFields);
-    const result = await LeaveService.getAllLeaves(filters, paginationOptions);
+    const result = await LeaveService.getAllLeaves(
+      filters,
+      paginationOptions,
+      req_user
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -50,6 +66,18 @@ const getSingleLeave: RequestHandler = catchAsync(
 );
 
 const updateLeave = catchAsync(async (req: Request, res: Response) => {
+  const req_user = req.user;
+  if (req_user?.user_type === 'employee' && req_user?.role !== 'Manager') {
+    const restrictedStatuses = ['Applied', 'Accepted', 'Rejected'];
+    if (restrictedStatuses.includes(req?.body?.status)) {
+      return sendResponse(res, {
+        statusCode: httpStatus.UNAUTHORIZED,
+        success: false,
+        message: 'You are unauthorized',
+      });
+    }
+  }
+
   const { id } = req.params;
   const { ...leaveData } = req.body;
   const result = await LeaveService.updateLeave(id, leaveData);

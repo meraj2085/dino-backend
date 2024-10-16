@@ -36,8 +36,8 @@ const login = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, 'Password is incorrect');
     }
     //create access token & refresh token
-    const { _id: userId, user_type, organization_id } = user;
-    const accessToken = jwtHelper_1.jwtHelpers.createToken({ userId, user_type, organization_id }, config_1.default.jwt.secret, config_1.default.jwt.expires_in);
+    const { _id: userId, user_type, organization_id, role } = user;
+    const accessToken = jwtHelper_1.jwtHelpers.createToken({ userId, user_type, organization_id, role }, config_1.default.jwt.secret, config_1.default.jwt.expires_in);
     const refreshToken = jwtHelper_1.jwtHelpers.createToken({ userId, user_type, organization_id }, config_1.default.jwt.refresh_secret, config_1.default.jwt.refresh_expires_in);
     return {
         accessToken,
