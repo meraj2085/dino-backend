@@ -47,6 +47,12 @@ export type IOrganization = {
   is_profile_completed?: boolean;
   is_admin_user_created?: boolean;
   status?: 'Deleted' | 'Disabled' | 'Active';
+  working_days?: string;
+  office_hours?: string;
+  org_departments?: string[];
+  org_teams?: string[];
+  org_designations?: string[];
+  org_roles?: string[];
 };
 
 export type OrganizationModel = Model<IOrganization, Record<string, unknown>>;

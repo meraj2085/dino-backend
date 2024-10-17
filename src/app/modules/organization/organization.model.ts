@@ -65,6 +65,30 @@ const OrganizationSchema = new Schema<IOrganization, OrganizationModel>(
       enum: ['Deleted', 'Disabled', 'Active'],
       default: 'Active',
     },
+    working_days: {
+      type: [String],
+      default: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    },
+    office_hours: {
+      type: String,
+      default: '8',
+    },
+    org_departments: {
+      type: [String],
+      default: [],
+    },
+    org_teams: {
+      type: [String],
+      default: [],
+    },
+    org_designations: {
+      type: [String],
+      default: [],
+    },
+    org_roles: {
+      type: [String],
+      default: ['Employee', 'Manager'],
+    },
   },
   {
     timestamps: true,
