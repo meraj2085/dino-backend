@@ -11,9 +11,7 @@ import { OrganizationService } from './organization.service';
 const addOrganization: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const data = req.body;
-
     const file = req.file as IUploadFile;
-
     const result = await OrganizationService.addOrganization(data, file);
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -60,14 +58,26 @@ const updateOrganization: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;
     const data = req.body;
-
     const file = req.file as IUploadFile;
-
-    const result = await OrganizationService.updateOrganization(id, data,file);
+    const result = await OrganizationService.updateOrganization(id, data, file);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Organization updated successfully',
+      data: result,
+    });
+  }
+);
+
+const organizationConfig: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const data = req.body;
+    const result = await OrganizationService.organizationConfig(id, data);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Organization config updated successfully',
       data: result,
     });
   }
@@ -92,4 +102,5 @@ export const OrganizationController = {
   getSingleOrganization,
   updateOrganization,
   deleteOrganization,
+  organizationConfig,
 };

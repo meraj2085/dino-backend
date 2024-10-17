@@ -16,7 +16,6 @@ const addOrganization = async (
     const uploadedImg = (await fileUploadHelper.uploadToCloudinary(
       file
     )) as ICloudinaryResponse;
-    // console.log(uploadedImg);
     data.profile_picture = uploadedImg.secure_url;
   }
 
@@ -96,10 +95,8 @@ const updateOrganization = async (
     const uploadedImg = (await fileUploadHelper.uploadToCloudinary(
       file
     )) as ICloudinaryResponse;
-    // console.log(uploadedImg);
     payload.profile_picture = uploadedImg.secure_url;
   }
-
   const updatedOrganization = await Organization.findOneAndUpdate(
     { _id: id },
     payload,
@@ -108,6 +105,20 @@ const updateOrganization = async (
     }
   );
   return updatedOrganization;
+};
+
+const organizationConfig = async (
+  id: string,
+  payload: Partial<IOrganization>
+): Promise<IOrganization | null> => {
+  const updatedOrganizationConfig = await Organization.findOneAndUpdate(
+    { _id: id },
+    payload,
+    {
+      new: true,
+    }
+  );
+  return updatedOrganizationConfig;
 };
 
 const deleteOrganization = async (
@@ -123,4 +134,5 @@ export const OrganizationService = {
   getSingleOrganization,
   updateOrganization,
   deleteOrganization,
+  organizationConfig,
 };
