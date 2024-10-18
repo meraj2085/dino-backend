@@ -48,7 +48,8 @@ export type IOrganization = {
   is_admin_user_created?: boolean;
   status?: 'Deleted' | 'Disabled' | 'Active';
   working_days?: string;
-  office_hours?: string;
+  office_start_time?: string;
+  office_end_time?: string;
   org_departments?: string[];
   org_teams?: string[];
   org_designations?: string[];

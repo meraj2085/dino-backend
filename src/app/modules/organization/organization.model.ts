@@ -69,9 +69,13 @@ const OrganizationSchema = new Schema<IOrganization, OrganizationModel>(
       type: [String],
       default: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
     },
-    office_hours: {
+    office_start_time: {
       type: String,
-      default: '8',
+      default: '09:00',
+    },
+    office_end_time: {
+      type: String,
+      default: '17:00',
     },
     org_departments: {
       type: [String],
