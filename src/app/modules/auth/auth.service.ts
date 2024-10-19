@@ -24,6 +24,8 @@ const login = async (payload: IUser): Promise<ILoginResponse> => {
   }
 
   const user = await isUserExist(office_email, User);
+  const is_manager = (await User.countDocuments({ manager_id: user?._id })) > 0;
+
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -35,9 +37,9 @@ const login = async (payload: IUser): Promise<ILoginResponse> => {
   }
 
   //create access token & refresh token
-  const { _id: userId, user_type, organization_id, role } = user;
+  const { _id: userId, user_type, organization_id } = user;
   const accessToken = jwtHelpers.createToken(
-    { userId, user_type, organization_id, role },
+    { userId, user_type, organization_id, is_manager },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );
