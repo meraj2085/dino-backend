@@ -32,7 +32,6 @@ router.post(
   fileUploadHelper.upload.single('profile_picture'),
 
   (req: Request, res: Response, next: NextFunction) => {
-    // console.log(req.body);
     req.body = UserValidation.addUserZodSchema.parse(JSON.parse(req.body.data));
     return UserController.addUser(req, res, next);
   }

@@ -25,7 +25,7 @@ const getAllLeaves: RequestHandler = catchAsync(
     const req_user = req.user;
     if (
       !req_user ||
-      (req_user?.user_type === 'employee' && req_user?.role !== 'Manager')
+      (req_user?.user_type === 'employee' && req_user?.is_manager === false)
     ) {
       return sendResponse(res, {
         statusCode: httpStatus.UNAUTHORIZED,
@@ -67,7 +67,8 @@ const getSingleLeave: RequestHandler = catchAsync(
 
 const updateLeave = catchAsync(async (req: Request, res: Response) => {
   const req_user = req.user;
-  if (req_user?.user_type === 'employee' && req_user?.role !== 'Manager') {
+  console.log(req_user);
+  if (req_user?.user_type === 'employee' && req_user?.is_manager !== true) {
     const restrictedStatuses = ['Applied', 'Accepted', 'Rejected'];
     if (restrictedStatuses.includes(req?.body?.status)) {
       return sendResponse(res, {

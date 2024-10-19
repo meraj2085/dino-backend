@@ -42,7 +42,7 @@ const getAllLeaves = async (
   paginationOptions: IPaginationOptions,
   req_user: IReq_user
 ) => {
-  const { user_type, role, userId, organization_id } = req_user;
+  const { user_type, is_manager, userId, organization_id } = req_user;
   const { searchTerm, ...filtersData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
@@ -76,7 +76,7 @@ const getAllLeaves = async (
   });
 
   // Get only leaves where the user's manager_id is the current manager's userId
-  if (user_type === 'employee' && role === 'Manager') {
+  if (user_type === 'employee' && is_manager === true) {
     andConditions.push({
       user_id: {
         $in: await User.find({ manager_id: userId }).select('_id'),

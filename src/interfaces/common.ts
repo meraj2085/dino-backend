@@ -28,7 +28,7 @@ export type IReq_user = {
   userId?: string;
   user_type?: string;
   organization_id?: string;
-  role?: string;
+  is_manager?: boolean;
   iat?: number;
   exp?: number;
 };

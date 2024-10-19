@@ -18,7 +18,6 @@ const addUser = async (
     const uploadedImg = (await fileUploadHelper.uploadToCloudinary(
       file
     )) as ICloudinaryResponse;
-    // console.log(uploadedImg);
     data.profile_picture = uploadedImg.secure_url;
   }
 
@@ -102,9 +101,10 @@ const getMyTeam = async (
     _id: userId,
   });
 
+  const is_manager = (await User.countDocuments({ manager_id: user?._id })) > 0;
   let manager_id: string | undefined;
 
-  if (user?.role === 'Manager') {
+  if (is_manager) {
     manager_id = userId;
   } else {
     manager_id = user?.manager_id;
