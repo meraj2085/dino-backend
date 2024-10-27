@@ -15,6 +15,7 @@ import {
   decryptPassword,
   encryptPassword,
 } from '../../../utils/cryptoPassword';
+import { generateStrongPassword } from '../../../utils/passwordGenerate';
 
 const login = async (payload: IUser): Promise<ILoginResponse> => {
   const { office_email, password } = payload;
@@ -133,7 +134,7 @@ const changePassword = async (
 };
 
 const adminResetPassword = async (id: string) => {
-  const new_password = 'Dino-123';
+  const new_password = await generateStrongPassword();
   if (!new_password) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Default password is not set');
   }
