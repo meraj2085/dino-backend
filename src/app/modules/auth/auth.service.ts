@@ -12,6 +12,7 @@ import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
 import {
   comparePassword,
+  decryptPassword,
   encryptPassword,
 } from '../../../utils/cryptoPassword';
 
@@ -149,9 +150,26 @@ const adminResetPassword = async (id: string) => {
   return updatedUser;
 };
 
+const showPassword = async (id: string) => {
+  const user = await User.findById(id).select([
+    'password',
+    'is_password_reset',
+    'office_email',
+  ]);
+  if (!user || !user.password || user.is_password_reset === true) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Not authorized');
+  }
+  const decoded_password = await decryptPassword(user.password);
+  return {
+    office_email: user.office_email,
+    password: decoded_password,
+  };
+};
+
 export const AuthService = {
   login,
   refreshToken,
   changePassword,
+  showPassword,
   adminResetPassword,
 };
