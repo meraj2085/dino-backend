@@ -96,7 +96,12 @@ const updateUser: RequestHandler = catchAsync(
 
     const file = req.file as IUploadFile;
 
-    const result = await UserService.updateUser(id, data, organization_id, file);
+    const result = await UserService.updateUser(
+      id,
+      data,
+      organization_id,
+      file
+    );
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -120,6 +125,24 @@ const deleteUser: RequestHandler = catchAsync(
   }
 );
 
+const disableOrActivateUser: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const organization_id = req.user?.organization_id;
+    const { id, status } = req.body;
+    const result = await UserService.disableOrActivateUser(
+      id,
+      status,
+      organization_id
+    );
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'User disabled successfully',
+      data: result,
+    });
+  }
+);
+
 export const UserController = {
   addUser,
   getUsers,
@@ -127,4 +150,5 @@ export const UserController = {
   getSingleUser,
   updateUser,
   deleteUser,
+  disableOrActivateUser,
 };

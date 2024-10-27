@@ -137,7 +137,13 @@ const updateUserZodSchema = z.object({
     .optional(),
 });
 
+const disableUserZodSchema = z.object({
+  id: z.string(),
+  status: z.enum(['Disabled', 'Active']),
+});
+
 export const UserValidation = {
   addUserZodSchema,
   updateUserZodSchema,
+  disableUserZodSchema,
 };
