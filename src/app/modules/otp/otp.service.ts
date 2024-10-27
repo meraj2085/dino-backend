@@ -1,11 +1,11 @@
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
-import { hashingHelper } from '../../../helpers/hashingHelpers';
 import { generateOTP } from '../../../utils/generateOTP';
 import { isUserExist } from '../../../utils/isUserExists';
 import { sendMail } from '../../../utils/sendMail';
 import { User } from '../user/user.model';
 import { Otp } from './otp.model';
+import { encryptPassword } from '../../../utils/cryptoPassword';
 
 const sendOtp = async (office_email: string) => {
   const user = await isUserExist(office_email, User);
@@ -114,7 +114,7 @@ const resetPassword = async (office_email: string, password: string) => {
   }
 
   // Encrypt password
-  const hashedPassword = await hashingHelper.encrypt_password(password);
+  const hashedPassword = await encryptPassword(password);
 
   const updatedUser = await User.findOneAndUpdate(
     { office_email },

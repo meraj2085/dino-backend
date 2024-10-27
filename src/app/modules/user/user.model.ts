@@ -1,8 +1,7 @@
 /* eslint-disable no-undef */
 import { Schema, model } from 'mongoose';
 import { IUser, UserModel } from './user.interface';
-import bcrypt from 'bcrypt';
-import config from '../../../config';
+import { encryptPassword } from '../../../utils/cryptoPassword';
 
 const UserSchema = new Schema<IUser, UserModel>(
   {
@@ -80,10 +79,7 @@ const UserSchema = new Schema<IUser, UserModel>(
 );
 
 UserSchema.pre('save', async function (next) {
-  this.password = await bcrypt.hash(
-    this.password as string,
-    Number(config.bcrypt_salt_rounds)
-  );
+  this.password = await encryptPassword(this.password as string);
   next();
 });
 

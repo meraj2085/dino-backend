@@ -2,16 +2,18 @@ import httpStatus from 'http-status';
 import { Secret } from 'jsonwebtoken';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
-import { hashingHelper } from '../../../helpers/hashingHelpers';
 import {
   ILoginResponse,
   IRefreshTokenResponse,
 } from '../../../interfaces/common';
-import { isPasswordMatch } from '../../../utils/isPasswordMatch';
 import { isUserExist } from '../../../utils/isUserExists';
 import { jwtHelpers } from '../../../utils/jwtHelper';
 import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
+import {
+  comparePassword,
+  encryptPassword,
+} from '../../../utils/cryptoPassword';
 
 const login = async (payload: IUser): Promise<ILoginResponse> => {
   const { office_email, password } = payload;
@@ -31,7 +33,7 @@ const login = async (payload: IUser): Promise<ILoginResponse> => {
   }
 
   // Check if password is correct
-  const passwordMatch = await isPasswordMatch(password, user.password);
+  const passwordMatch = await comparePassword(password, user?.password);
   if (!passwordMatch) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect');
   }
@@ -101,23 +103,21 @@ const changePassword = async (
 ) => {
   const user = await User.findById(userId);
 
-  // console.log(user);
-
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
-  // Check if password is correct
-  const passwordMatch = await isPasswordMatch(
-    old_password,
-    user.password as string
-  );
+  if (!user.password) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is not set');
+  }
+
+  const passwordMatch = await comparePassword(old_password, user.password);
   if (!passwordMatch) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Old password is incorrect');
   }
 
   // Encrypt password
-  const hashedPassword = await hashingHelper.encrypt_password(new_password);
+  const hashedPassword = await encryptPassword(new_password);
 
   // Update password
   const updatedUser = await User.findOneAndUpdate(
@@ -137,7 +137,7 @@ const adminResetPassword = async (id: string) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Default password is not set');
   }
 
-  const hashedPassword = await hashingHelper.encrypt_password(new_password);
+  const hashedPassword = await encryptPassword(new_password);
   const updatedUser = await User.findOneAndUpdate(
     { _id: id },
     { password: hashedPassword, is_password_reset: false },
