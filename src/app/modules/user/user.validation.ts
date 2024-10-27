@@ -53,7 +53,7 @@ const addUserZodSchema = z.object({
     .enum(['super_admin', 'admin', 'employee'])
     .default('employee')
     .optional(),
-  password: z.string().default('Dino-123').optional(),
+  password: z.string().optional(),
   salaryDetails: z.object({
     basic_salary: z.string({
       required_error: 'Basic Salary  is Required',
@@ -120,7 +120,7 @@ const updateUserZodSchema = z.object({
     .enum(['super_admin', 'admin', 'employee'])
     .default('employee')
     .optional(),
-  password: z.string().default('Dino-123').optional(),
+  password: z.string().optional(),
   profile_picture: z.string().optional(),
   status: z
     .enum(['Deleted', 'Disabled', 'Active'])

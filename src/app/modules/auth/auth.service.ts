@@ -33,6 +33,9 @@ const login = async (payload: IUser): Promise<ILoginResponse> => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
+  if (user.status === 'Disabled') {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'User is disabled');
+  }
 
   // Check if password is correct
   const passwordMatch = await comparePassword(password, user?.password);
