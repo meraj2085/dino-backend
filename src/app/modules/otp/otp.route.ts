@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Routes
 router.post(
-  '/',
+  '/reset-password',
   validateRequest(OtpValidation.resetPasswordZodSchema),
   OtpController.resetPassword
 );

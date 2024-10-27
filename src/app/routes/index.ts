@@ -27,7 +27,7 @@ const moduleRoutes = [
     route: AuthRoutes,
   },
   {
-    path: '/reset-password',
+    path: '/otp',
     route: OtpRoutes,
   },
   {

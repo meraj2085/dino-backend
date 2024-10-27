@@ -131,8 +131,27 @@ const changePassword = async (
   return updatedUser;
 };
 
+const adminResetPassword = async (id: string) => {
+  const new_password = 'Dino-123';
+  if (!new_password) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Default password is not set');
+  }
+
+  const hashedPassword = await hashingHelper.encrypt_password(new_password);
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: id },
+    { password: hashedPassword, is_password_reset: false },
+    {
+      new: true,
+    }
+  ).select('-password');
+
+  return updatedUser;
+};
+
 export const AuthService = {
   login,
   refreshToken,
   changePassword,
+  adminResetPassword,
 };

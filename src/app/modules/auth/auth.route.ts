@@ -26,4 +26,11 @@ router.post(
   AuthController.changePassword
 );
 
+router.post(
+  '/admin-reset-password',
+  auth(ENUM_USER_ROLE.ADMIN),
+  validateRequest(AuthValidation.adminResetPasswordSchema),
+  AuthController.adminResetPassword
+);
+
 export const AuthRoutes = router;
