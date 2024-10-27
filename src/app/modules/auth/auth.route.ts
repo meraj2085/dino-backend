@@ -27,6 +27,12 @@ router.post(
 );
 
 router.post(
+  '/show-password',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  AuthController.showPassword
+);
+
+router.post(
   '/admin-reset-password',
   auth(ENUM_USER_ROLE.ADMIN),
   validateRequest(AuthValidation.adminResetPasswordSchema),

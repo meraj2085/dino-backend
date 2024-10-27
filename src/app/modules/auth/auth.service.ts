@@ -12,8 +12,10 @@ import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
 import {
   comparePassword,
+  decryptPassword,
   encryptPassword,
 } from '../../../utils/cryptoPassword';
+import { generateStrongPassword } from '../../../utils/passwordGenerate';
 
 const login = async (payload: IUser): Promise<ILoginResponse> => {
   const { office_email, password } = payload;
@@ -132,7 +134,7 @@ const changePassword = async (
 };
 
 const adminResetPassword = async (id: string) => {
-  const new_password = 'Dino-123';
+  const new_password = await generateStrongPassword();
   if (!new_password) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Default password is not set');
   }
@@ -149,9 +151,26 @@ const adminResetPassword = async (id: string) => {
   return updatedUser;
 };
 
+const showPassword = async (id: string) => {
+  const user = await User.findById(id).select([
+    'password',
+    'is_password_reset',
+    'office_email',
+  ]);
+  if (!user || !user.password || user.is_password_reset === true) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Not authorized');
+  }
+  const decoded_password = await decryptPassword(user.password);
+  return {
+    office_email: user.office_email,
+    password: decoded_password,
+  };
+};
+
 export const AuthService = {
   login,
   refreshToken,
   changePassword,
+  showPassword,
   adminResetPassword,
 };
