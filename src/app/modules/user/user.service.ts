@@ -236,6 +236,23 @@ const deleteUser = async (
   return user;
 };
 
+const disableOrActivateUser = async (
+  id: string,
+  status: 'Disabled' | 'Active',
+  organization_id: string
+): Promise<IUser | null> => {
+  const user = await User.findByIdAndUpdate(
+    { _id: id, organization_id },
+    {
+      status: status,
+    },
+    {
+      new: true,
+    }
+  ).select('-password');
+  return user;
+};
+
 export const UserService = {
   addUser,
   getUsers,
@@ -243,4 +260,5 @@ export const UserService = {
   getSingleUser,
   updateUser,
   deleteUser,
+  disableOrActivateUser,
 };

@@ -2,6 +2,7 @@
 import { Schema, model } from 'mongoose';
 import { IUser, UserModel } from './user.interface';
 import { encryptPassword } from '../../../utils/cryptoPassword';
+import { generateStrongPassword } from '../../../utils/passwordGenerate';
 
 const UserSchema = new Schema<IUser, UserModel>(
   {
@@ -50,7 +51,6 @@ const UserSchema = new Schema<IUser, UserModel>(
     },
     password: {
       type: String,
-      default: 'Dino-123',
     },
     profile_picture: String,
     status: {
@@ -79,7 +79,8 @@ const UserSchema = new Schema<IUser, UserModel>(
 );
 
 UserSchema.pre('save', async function (next) {
-  this.password = await encryptPassword(this.password as string);
+  const new_password = await generateStrongPassword();
+  this.password = await encryptPassword(new_password as string);
   next();
 });
 
