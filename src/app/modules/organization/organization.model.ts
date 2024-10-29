@@ -93,6 +93,10 @@ const OrganizationSchema = new Schema<IOrganization, OrganizationModel>(
       type: [String],
       default: ['Employee', 'Manager'],
     },
+    user_delete_permission: {
+      type: Boolean,
+      default: false,
+    }
   },
   {
     timestamps: true,

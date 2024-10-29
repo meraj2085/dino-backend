@@ -54,6 +54,7 @@ export type IOrganization = {
   org_teams?: string[];
   org_designations?: string[];
   org_roles?: string[];
+  user_delete_permission?: boolean;
 };
 
 export type OrganizationModel = Model<IOrganization, Record<string, unknown>>;
