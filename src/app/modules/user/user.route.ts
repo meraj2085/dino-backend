@@ -54,6 +54,16 @@ router.patch(
   // validateRequest(UserValidation.updateUserZodSchema),
   // UserController.updateUser
 );
-router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), UserController.deleteUser);
+router.post(
+  '/delete/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  UserController.deleteUser
+);
+router.post(
+  '/disable-or-activate',
+  auth(ENUM_USER_ROLE.ADMIN),
+  // validateRequest(UserValidation.disableUserZodSchema),
+  UserController.disableOrActivateUser
+);
 
 export const UserRoutes = router;

@@ -76,9 +76,22 @@ const adminResetPassword = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const showPassword = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.body;
+  const result = await AuthService.showPassword(id);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Password retrieved successfully!',
+    data: result,
+  });
+});
+
 export const AuthController = {
   login,
   refreshToken,
   changePassword,
+  showPassword,
   adminResetPassword,
 };
