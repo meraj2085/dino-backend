@@ -65,6 +65,38 @@ const OrganizationSchema = new mongoose_1.Schema({
         enum: ['Deleted', 'Disabled', 'Active'],
         default: 'Active',
     },
+    working_days: {
+        type: [String],
+        default: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    },
+    office_start_time: {
+        type: String,
+        default: '09:00',
+    },
+    office_end_time: {
+        type: String,
+        default: '17:00',
+    },
+    org_departments: {
+        type: [String],
+        default: [],
+    },
+    org_teams: {
+        type: [String],
+        default: [],
+    },
+    org_designations: {
+        type: [String],
+        default: [],
+    },
+    org_roles: {
+        type: [String],
+        default: ['Employee', 'Manager'],
+    },
+    user_delete_permission: {
+        type: Boolean,
+        default: false,
+    }
 }, {
     timestamps: true,
     toJSON: {

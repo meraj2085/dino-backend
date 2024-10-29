@@ -16,7 +16,6 @@ router.get('/', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN, user_1.ENUM_USE
 router.get('/my-team', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN, user_1.ENUM_USER_ROLE.EMPLOYEE), user_controller_1.UserController.getMyTeam);
 router.get('/:id', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN, user_1.ENUM_USER_ROLE.EMPLOYEE, user_1.ENUM_USER_ROLE.SUPER_ADMIN), user_controller_1.UserController.getSingleUser);
 router.post('/', (0, auth_1.default)(user_1.ENUM_USER_ROLE.SUPER_ADMIN, user_1.ENUM_USER_ROLE.ADMIN), fileUploadHelper_1.fileUploadHelper.upload.single('profile_picture'), (req, res, next) => {
-    // console.log(req.body);
     req.body = user_validation_1.UserValidation.addUserZodSchema.parse(JSON.parse(req.body.data));
     return user_controller_1.UserController.addUser(req, res, next);
 }
@@ -31,5 +30,8 @@ router.patch('/:id', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN), fileUploa
 // validateRequest(UserValidation.updateUserZodSchema),
 // UserController.updateUser
 );
-router.delete('/:id', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN), user_controller_1.UserController.deleteUser);
+router.post('/delete/:id', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN), user_controller_1.UserController.deleteUser);
+router.post('/disable-or-activate', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN), 
+// validateRequest(UserValidation.disableUserZodSchema),
+user_controller_1.UserController.disableOrActivateUser);
 exports.UserRoutes = router;

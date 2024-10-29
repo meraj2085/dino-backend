@@ -29,7 +29,6 @@ const organization_utils_1 = require("./organization.utils");
 const addOrganization = (data, file) => __awaiter(void 0, void 0, void 0, function* () {
     if (file) {
         const uploadedImg = (yield fileUploadHelper_1.fileUploadHelper.uploadToCloudinary(file));
-        // console.log(uploadedImg);
         data.profile_picture = uploadedImg.secure_url;
     }
     //Generate organization code
@@ -85,13 +84,18 @@ const getSingleOrganization = (id) => __awaiter(void 0, void 0, void 0, function
 const updateOrganization = (id, payload, file) => __awaiter(void 0, void 0, void 0, function* () {
     if (file) {
         const uploadedImg = (yield fileUploadHelper_1.fileUploadHelper.uploadToCloudinary(file));
-        // console.log(uploadedImg);
         payload.profile_picture = uploadedImg.secure_url;
     }
     const updatedOrganization = yield organization_model_1.Organization.findOneAndUpdate({ _id: id }, payload, {
         new: true,
     });
     return updatedOrganization;
+});
+const organizationConfig = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const updatedOrganizationConfig = yield organization_model_1.Organization.findOneAndUpdate({ _id: id }, payload, {
+        new: true,
+    });
+    return updatedOrganizationConfig;
 });
 const deleteOrganization = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const organization = yield organization_model_1.Organization.findByIdAndDelete(id);
@@ -103,4 +107,5 @@ exports.OrganizationService = {
     getSingleOrganization,
     updateOrganization,
     deleteOrganization,
+    organizationConfig,
 };

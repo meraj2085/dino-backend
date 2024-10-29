@@ -24,7 +24,13 @@ const changePasswordZodSchema = zod_1.z.object({
             .max(100),
     }),
 });
+const adminResetPasswordSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        id: zod_1.z.string(),
+    }),
+});
 exports.AuthValidation = {
     loginZodSchema,
     changePasswordZodSchema,
+    adminResetPasswordSchema,
 };
