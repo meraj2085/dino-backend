@@ -8,6 +8,12 @@ import { AttendanceValidation } from './attendance.validation';
 const router = express.Router();
 
 router.get(
+  '/getTodaysAttendance',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.EMPLOYEE),
+  AttendanceController.getTodaysAttendance
+);
+
+router.get(
   '/:id',
   auth(
     ENUM_USER_ROLE.ADMIN,
@@ -35,7 +41,7 @@ router.post(
     ENUM_USER_ROLE.SUPER_ADMIN,
     ENUM_USER_ROLE.EMPLOYEE
   ),
-  validateRequest(AttendanceValidation.addAttendanceZodSchema),
+  // validateRequest(AttendanceValidation.addAttendanceZodSchema),
   AttendanceController.addAttendance
 );
 

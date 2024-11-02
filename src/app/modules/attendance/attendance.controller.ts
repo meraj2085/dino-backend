@@ -21,6 +21,19 @@ const addAttendance: RequestHandler = catchAsync(
   }
 );
 
+const getTodaysAttendance: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+    const result = await AttendanceService.getTodaysAttendance(userId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Todays Attendance Fetched successfully',
+      data: result,
+    });
+  }
+);
+
 const getAllAttendance: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const organization_id = req.user?.organization_id;
@@ -77,6 +90,7 @@ const myAttendance: RequestHandler = catchAsync(
 
 export const AttendanceController = {
   addAttendance,
+  getTodaysAttendance,
   getAllAttendance,
   updateAttendance,
   myAttendance,

@@ -1,5 +1,5 @@
 import httpStatus from 'http-status';
-import mongoose, { SortOrder } from 'mongoose';
+import { SortOrder } from 'mongoose';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -12,43 +12,101 @@ const addAttendance = async (
   data: IAttendance,
   organization_id: string
 ): Promise<IAttendance | null> => {
-  let service = null;
-  const session = await mongoose.startSession();
-  try {
-    session.startTransaction();
+  const userData = await User.findOne({
+    _id: data.user_id,
+    organization_id: organization_id,
+  });
 
-    const userData = await User.findOne({
-      _id: data?.user_id,
-      organization_id: organization_id,
-    });
-
-    if (!userData) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'You are not a User.');
-    }
-
-    const isAttendance = await attendance.findOne({
-      user_id: data?.user_id,
-      organization_id: organization_id,
-      date: data?.date,
-      is_checkout: true,
-    });
-
-    if (isAttendance) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Already present!');
-    }
-
-    data.userName = `${userData?.first_name} ${userData?.last_name}`;
-    data.organization_id = organization_id;
-    service = await attendance.create(data);
-
-    await session.commitTransaction();
-    await session.endSession();
-  } catch (error) {
-    await session.abortTransaction();
-    await session.endSession();
-    throw error;
+  if (!userData) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'User not found in the organization.'
+    );
   }
-  return service;
+
+  const todayDate = new Date().toISOString().split('T')[0];
+
+  let userAttendance = await attendance.findOne({
+    user_id: data.user_id,
+    organization_id: organization_id,
+    date: todayDate,
+  });
+
+  data.activity_logs = data.activity_logs || [];
+
+  if (!userAttendance) {
+    if (data.action === 'check_in') {
+      data.check_in = new Date().toISOString();
+      data.activity_logs.push({
+        activity: 'check_in',
+        timestamp: new Date().toISOString(),
+      });
+      data.organization_id = organization_id;
+      data.date = todayDate;
+
+      userAttendance = await attendance.create(data);
+    } else {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        'Cannot check out without checking in first.'
+      );
+    }
+  } else {
+    const lastActivity =
+      userAttendance.activity_logs[userAttendance.activity_logs.length - 1];
+
+    if (data.action === 'check_in') {
+      if (lastActivity && lastActivity.activity === 'check_in') {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Already checked in.');
+      }
+      userAttendance.activity_logs.push({
+        activity: 'check_in',
+        timestamp: new Date().toISOString(),
+      });
+      userAttendance.check_in = new Date().toISOString();
+    } else if (data.action === 'check_out') {
+      if (lastActivity && lastActivity.activity === 'check_out') {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Already checked out.');
+      }
+      userAttendance.activity_logs.push({
+        activity: 'check_out',
+        timestamp: new Date().toISOString(),
+      });
+      userAttendance.check_out = new Date().toISOString();
+    }
+
+    await userAttendance.save();
+  }
+  return userAttendance;
+};
+
+const getTodaysAttendance = async (
+  userId: string
+): Promise<{
+  userId: string;
+  date: string;
+  check_in?: string;
+  check_out?: string;
+  activity_logs: Array<{ activity: string; timestamp: string }>;
+} | null> => {
+  const today = new Date().toISOString().split('T')[0];
+
+  const userAttendance = await attendance.findOne({
+    user_id: userId,
+    date: today,
+  });
+
+  if (!userAttendance) {
+    return null;
+  }
+
+  return {
+    userId: userAttendance.user_id,
+    date: userAttendance.date,
+    check_in: userAttendance.check_in,
+    check_out: userAttendance.check_out,
+    activity_logs: userAttendance.activity_logs,
+  };
 };
 
 const getAllAttendance = async (
@@ -172,6 +230,7 @@ const myAttendance = async (
 
 export const AttendanceService = {
   addAttendance,
+  getTodaysAttendance,
   getAllAttendance,
   updateAttendance,
   myAttendance,
