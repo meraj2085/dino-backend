@@ -5,6 +5,7 @@ import routes from './app/routes';
 import cookieParser from 'cookie-parser';
 import handleNotFoundError from './errors/handleNotFoundError';
 import cronJobs from './app/cornJobs';
+import { updateDailyAttendance } from './app/cornJobs/updateDailyAttendance';
 
 const app: Application = express();
 app.use(cors());
@@ -23,6 +24,10 @@ app.get('/', async (req: Request, res: Response) => {
     status: 'success',
     message: 'Working successfully!',
   });
+});
+
+app.get('/updateDailyAttendance', async (req: Request, res: Response) => {
+  await updateDailyAttendance(req, res);
 });
 
 // Cron jobs
