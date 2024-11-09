@@ -1,4 +1,5 @@
 import { attendance } from '../modules/attendance/attendance.model';
+import { Organization } from '../modules/organization/organization.model';
 
 const formatTime = (seconds: any) => {
   const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -7,81 +8,112 @@ const formatTime = (seconds: any) => {
   return `${hours}:${minutes}:${remainingSeconds}`;
 };
 
-export const updateDailyAttendance = async (req, res) => {
+export const updateDailyAttendance = async (utcTimeZone: string) => {
   try {
-    const allAttendances = await attendance.find({
-      user_id: '65972575f7234cb7a2f1d02e',
-      date: new Date().toISOString().split('T')[0],
-    });
+    const orgs = await Organization.find({
+      utc_offset: utcTimeZone,
+      status: 'Active',
+    }).select(['_id', 'office_start_time', 'office_end_time']);
 
-    for (const record of allAttendances) {
-      let totalProduction = 0;
-      let totalOvertime = 0;
-      let totalBreak = 0;
-
-      let lastCheckIn: any = null;
-      let lastCheckOut: any = null;
-
-      // Process activity logs
-      record.activity_logs.forEach(activity => {
-        const activityTime = new Date(activity.timestamp);
-
-        if (activity.activity === 'check_in') {
-          if (lastCheckOut) {
-            // Calculate break time between check_out and check_in
-            const diffMs = activityTime.getTime() - lastCheckOut.getTime();
-            const diffSeconds = Math.floor(diffMs / 1000);
-            totalBreak += diffSeconds;
-            lastCheckOut = null; // Reset last check-out after calculating break
-          }
-          lastCheckIn = activityTime;
-        } else if (activity.activity === 'check_out' && lastCheckIn) {
-          // Calculate production time between check_in and check_out
-          const diffMs = activityTime.getTime() - lastCheckIn.getTime();
-          const diffSeconds = Math.floor(diffMs / 1000);
-          totalProduction += diffSeconds;
-          lastCheckIn = null; // Reset last check-in after calculating production
-          lastCheckOut = activityTime; // Set last check-out for potential break calculation
-        }
+    for (const org of orgs) {
+      const thisOrgAttendances = await attendance.find({
+        user_id: '65972575f7234cb7a2f1d02e',
+        organization_id: org._id,
+        date: new Date().toISOString().split('T')[0],
       });
 
-      // Add overtime if after working hours (example: after 5:00 PM)
-      const officeEndTime = new Date().setHours(17, 0, 0, 0); // 5:00 PM
-      if (
-        record.check_out &&
-        new Date(record.check_out).getTime() > officeEndTime
-      ) {
-        const diffMs = new Date(record.check_out).getTime() - officeEndTime;
-        totalOvertime = Math.floor(diffMs / 1000);
-      }
+      const [endHour, endMinute] = (org.office_end_time || '17:00')
+        .split(':')
+        .map(Number);
+      const officeEndTime = new Date();
+      officeEndTime.setHours(endHour, endMinute, 0, 0);
 
-      console.log(
-        'Total Production: ' + formatTime(totalProduction),
-        'Total Overtime: ' + formatTime(totalOvertime),
-        'Total Break: ' + formatTime(totalBreak)
-      );
+      for (const record of thisOrgAttendances) {
+        let totalProduction = 0;
+        let totalOvertime = 0;
+        let totalBreak = 0;
 
-      //   Update the attendance record with calculated values
-      await attendance.updateOne(
-        { _id: record._id },
-        {
-          production: totalProduction,
-          overtime: totalOvertime,
-          break: totalBreak,
+        let lastCheckIn: any = null;
+        let lastCheckOut: any = null;
+
+        // Check if auto check-out/check-in is needed
+        const now = new Date();
+        const isEndOfDay =
+          now.getHours() === endHour && now.getMinutes() === endMinute;
+
+        record.activity_logs.forEach(activity => {
+          const activityTime = new Date(activity.timestamp);
+
+          if (activity.activity === 'check_in') {
+            if (lastCheckOut) {
+              const diffMs = activityTime.getTime() - lastCheckOut.getTime();
+              const diffSeconds = Math.floor(diffMs / 1000);
+              totalBreak += diffSeconds;
+              lastCheckOut = null;
+            }
+            lastCheckIn = activityTime;
+          } else if (activity.activity === 'check_out' && lastCheckIn) {
+            const diffMs = activityTime.getTime() - lastCheckIn.getTime();
+            const diffSeconds = Math.floor(diffMs / 1000);
+            totalProduction += diffSeconds;
+            lastCheckIn = null;
+            lastCheckOut = activityTime;
+          }
+        });
+
+        // Auto-check-out at end of office time
+        if (isEndOfDay && lastCheckIn && !lastCheckOut) {
+          const autoCheckOutTime = officeEndTime;
+          const diffMs = autoCheckOutTime.getTime() - lastCheckIn.getTime();
+          const diffSeconds = Math.floor(diffMs / 1000);
+          totalProduction += diffSeconds;
+
+          record.activity_logs.push({
+            activity: 'check_out',
+            timestamp: autoCheckOutTime.toISOString(),
+          });
+
+          record.activity_logs.push({
+            activity: 'check_in',
+            timestamp: autoCheckOutTime.toISOString(),
+          });
         }
-      );
-    }
 
-    res.send({
-      status: 200,
-      message: 'Attendance updated successfully.',
-    });
-    // console.log('Attendance updated successfully.');
+        // Overtime calculation
+        if (
+          record.check_out &&
+          new Date(record.check_out).getTime() > officeEndTime.getTime()
+        ) {
+          const checkOutTime = new Date(record.check_out).getTime();
+          const diffMs = checkOutTime - officeEndTime.getTime();
+          
+          // Subtract the totalBreak time from the overtime calculation
+          const overtimeWithoutBreak = diffMs - totalBreak;
+        
+          if (overtimeWithoutBreak > 0) {
+            totalOvertime = Math.floor(overtimeWithoutBreak / 1000); // convert milliseconds to seconds
+          }
+        }
+
+        console.log(
+          // 'Total Production: ' + formatTime(totalProduction),
+          'Total Overtime: ' + formatTime(totalOvertime),
+          // 'Total Break: ' + formatTime(totalBreak)
+        );
+
+        // Update record
+        // await attendance.updateOne(
+        //   { _id: record._id },
+        //   {
+        //     production: totalProduction,
+        //     overtime: totalOvertime,
+        //     break: totalBreak,
+        //     activity_logs: record.activity_logs,
+        //   }
+        // );
+      }
+    }
   } catch (error) {
     console.error('Error updating Attendance:', error);
-    res.send({
-      status: 500,
-      message: 'Error updating Attendance',
-    });
   }
 };

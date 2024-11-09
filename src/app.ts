@@ -26,8 +26,8 @@ app.get('/', async (req: Request, res: Response) => {
   });
 });
 
-app.get('/updateDailyAttendance', async (req: Request, res: Response) => {
-  await updateDailyAttendance(req, res);
+app.get('/updateDailyAttendance', async () => {
+  await updateDailyAttendance("+06:00");
 });
 
 // Cron jobs
