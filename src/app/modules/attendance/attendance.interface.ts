@@ -25,4 +25,5 @@ export type IAttendanceFilters = {
   userName?: string;
   _id?: string;
   date?: string;
+  monthYear?: string;
 };

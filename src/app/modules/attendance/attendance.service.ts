@@ -188,40 +188,78 @@ const updateAttendance = async (
 
 const myAttendance = async (
   userId: string,
-  organization_id: string
-): Promise<IAttendance[] | null> => {
+  organization_id: string,
+  filters: IAttendanceFilters,
+  paginationOptions: IPaginationOptions
+): Promise<{ meta: any; data: any }> => {
   try {
-    const currentDate = new Date();
-    const startOfMonth = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1
-    );
-    const endOfMonth = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      0,
-      23,
-      59,
-      59,
-      999
-    );
     const isUser = await User.findOne({ _id: userId, organization_id });
     if (!isUser) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'User does not exist.');
     }
-    const myAttendanceData = await attendance
-      .find({
+
+    const { searchTerm, monthYear, ...filtersData } = filters;
+    const { page, limit, skip, sortBy, sortOrder } =
+      paginationHelpers.calculatePagination(paginationOptions);
+
+    const currentDate = new Date();
+    const [year, month] = monthYear
+      ? monthYear.split('-').map(Number)
+      : [currentDate.getFullYear(), currentDate.getMonth() + 1];
+
+    const startOfMonth = new Date(year, month - 1, 1);
+    const endOfMonth = new Date(year, month, 0, 23, 59, 59, 999);
+
+    const andConditions: any[] = [
+      {
         user_id: userId,
         organization_id,
         date: {
           $gte: startOfMonth.toISOString(),
           $lt: endOfMonth.toISOString(),
         },
-      })
-      .sort({ createdAt: -1 });
+      },
+    ];
 
-    return myAttendanceData;
+    if (searchTerm) {
+      andConditions.push({
+        $or: attendanceFilterableFields.map(field => ({
+          [field]: { $regex: searchTerm, $options: 'i' },
+        })),
+      });
+    }
+
+    if (Object.keys(filtersData).length) {
+      andConditions.push({
+        $and: Object.entries(filtersData).map(([field, value]) => ({
+          [field]: value,
+        })),
+      });
+    }
+
+    const sortConditions: { [key: string]: SortOrder } = {};
+    if (sortBy && sortOrder) {
+      sortConditions[sortBy] = sortOrder;
+    }
+
+    const whereConditions = { $and: andConditions } as Record<string, any>;
+
+    const myAttendanceData = await attendance
+      .find(whereConditions)
+      .sort(sortConditions)
+      .skip(skip)
+      .limit(limit);
+
+    const total = await attendance.countDocuments(whereConditions);
+
+    return {
+      meta: {
+        page,
+        limit,
+        total,
+      },
+      data: myAttendanceData,
+    };
   } catch (error) {
     console.log(error);
     throw error;

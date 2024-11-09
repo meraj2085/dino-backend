@@ -76,14 +76,23 @@ const updateAttendance: RequestHandler = catchAsync(
 
 const myAttendance: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const id = req.user?.userId;
     const organization_id = req.user?.organization_id;
-    const result = await AttendanceService.myAttendance(id, organization_id);
+    const filters = pick(req.query, attendanceFilterableFields);
+    const paginationOptions = pick(req.query, paginationFields);
+    const result = await AttendanceService.myAttendance(
+      id,
+      organization_id,
+      filters,
+      paginationOptions
+    );
+
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Fetch My Attendance.',
-      data: result,
+      meta: result.meta,
+      data: result.data,
     });
   }
 );
