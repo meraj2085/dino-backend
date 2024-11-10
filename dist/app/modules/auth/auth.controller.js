@@ -70,8 +70,30 @@ const changePassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
         data: result,
     });
 }));
+const adminResetPassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.body;
+    const result = yield auth_service_1.AuthService.adminResetPassword(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Password reset successfully!',
+        data: result,
+    });
+}));
+const showPassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.body;
+    const result = yield auth_service_1.AuthService.showPassword(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Password retrieved successfully!',
+        data: result,
+    });
+}));
 exports.AuthController = {
     login,
     refreshToken,
     changePassword,
+    showPassword,
+    adminResetPassword,
 };

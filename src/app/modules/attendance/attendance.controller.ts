@@ -21,6 +21,19 @@ const addAttendance: RequestHandler = catchAsync(
   }
 );
 
+const getTodaysAttendance: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+    const result = await AttendanceService.getTodaysAttendance(userId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Todays Attendance Fetched successfully',
+      data: result,
+    });
+  }
+);
+
 const getAllAttendance: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const organization_id = req.user?.organization_id;
@@ -63,20 +76,30 @@ const updateAttendance: RequestHandler = catchAsync(
 
 const myAttendance: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const id = req.user?.userId;
     const organization_id = req.user?.organization_id;
-    const result = await AttendanceService.myAttendance(id, organization_id);
+    const filters = pick(req.query, attendanceFilterableFields);
+    const paginationOptions = pick(req.query, paginationFields);
+    const result = await AttendanceService.myAttendance(
+      id,
+      organization_id,
+      filters,
+      paginationOptions
+    );
+
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Fetch My Attendance.',
-      data: result,
+      meta: result.meta,
+      data: result.data,
     });
   }
 );
 
 export const AttendanceController = {
   addAttendance,
+  getTodaysAttendance,
   getAllAttendance,
   updateAttendance,
   myAttendance,

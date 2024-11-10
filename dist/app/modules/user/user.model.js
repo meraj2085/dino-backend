@@ -8,15 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 /* eslint-disable no-undef */
 const mongoose_1 = require("mongoose");
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const config_1 = __importDefault(require("../../../config"));
+const cryptoPassword_1 = require("../../../utils/cryptoPassword");
+const passwordGenerate_1 = require("../../../utils/passwordGenerate");
 const UserSchema = new mongoose_1.Schema({
     organization_id: String,
     first_name: String,
@@ -63,7 +60,6 @@ const UserSchema = new mongoose_1.Schema({
     },
     password: {
         type: String,
-        default: 'Dino-123',
     },
     profile_picture: String,
     status: {
@@ -90,7 +86,8 @@ const UserSchema = new mongoose_1.Schema({
 });
 UserSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
-        this.password = yield bcrypt_1.default.hash(this.password, Number(config_1.default.bcrypt_salt_rounds));
+        const new_password = yield (0, passwordGenerate_1.generateStrongPassword)();
+        this.password = yield (0, cryptoPassword_1.encryptPassword)(new_password);
         next();
     });
 });

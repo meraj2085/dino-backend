@@ -31,7 +31,6 @@ const addUser = (data, file) => __awaiter(void 0, void 0, void 0, function* () {
     //If file uploaded then upload to cloudinary
     if (file) {
         const uploadedImg = (yield fileUploadHelper_1.fileUploadHelper.uploadToCloudinary(file));
-        // console.log(uploadedImg);
         data.profile_picture = uploadedImg.secure_url;
     }
     //Generate employee code
@@ -92,8 +91,9 @@ const getMyTeam = (filters, paginationOptions, req_user) => __awaiter(void 0, vo
     const user = yield user_model_1.User.findOne({
         _id: userId,
     });
+    const is_manager = (yield user_model_1.User.countDocuments({ manager_id: user === null || user === void 0 ? void 0 : user._id })) > 0;
     let manager_id;
-    if ((user === null || user === void 0 ? void 0 : user.role) === 'Manager') {
+    if (is_manager) {
         manager_id = userId;
     }
     else {
@@ -192,6 +192,14 @@ const deleteUser = (id, organization_id) => __awaiter(void 0, void 0, void 0, fu
     }).select('-password');
     return user;
 });
+const disableOrActivateUser = (id, status, organization_id) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.findByIdAndUpdate({ _id: id, organization_id }, {
+        status: status,
+    }, {
+        new: true,
+    }).select('-password');
+    return user;
+});
 exports.UserService = {
     addUser,
     getUsers,
@@ -199,4 +207,5 @@ exports.UserService = {
     getSingleUser,
     updateUser,
     deleteUser,
+    disableOrActivateUser,
 };

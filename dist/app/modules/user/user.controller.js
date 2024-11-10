@@ -20,6 +20,7 @@ const pick_1 = __importDefault(require("../../../shared/pick"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const user_constant_1 = require("./user.constant");
 const user_service_1 = require("./user.service");
+const organization_model_1 = require("../organization/organization.model");
 const addUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
     const file = req.file;
@@ -95,12 +96,34 @@ const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 const deleteUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _d;
     const organization_id = (_d = req.user) === null || _d === void 0 ? void 0 : _d.organization_id;
+    const organization = yield organization_model_1.Organization.findOne({
+        _id: organization_id,
+    }).select('user_delete_permission');
+    if (!(organization === null || organization === void 0 ? void 0 : organization.user_delete_permission)) {
+        return (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.UNAUTHORIZED,
+            success: false,
+            message: 'You do not have permission to delete user',
+        });
+    }
     const id = req.params.id;
     const result = yield user_service_1.UserService.deleteUser(id, organization_id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'User deleted successfully',
+        data: result,
+    });
+}));
+const disableOrActivateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _e;
+    const organization_id = (_e = req.user) === null || _e === void 0 ? void 0 : _e.organization_id;
+    const { id, status } = req.body;
+    const result = yield user_service_1.UserService.disableOrActivateUser(id, status, organization_id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'User disabled successfully',
         data: result,
     });
 }));
@@ -111,4 +134,5 @@ exports.UserController = {
     getSingleUser,
     updateUser,
     deleteUser,
+    disableOrActivateUser,
 };

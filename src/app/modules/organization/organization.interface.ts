@@ -36,6 +36,7 @@ export type IOrganization = {
   billing_contact_person_last_name?: string;
   billing_contact_person_email?: string;
   billing_contact_person_phone_number?: string;
+  utc_offset?: string;
   bank_name?: string;
   account_number?: string;
   routing_number?: string;

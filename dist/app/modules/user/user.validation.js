@@ -15,7 +15,6 @@ const addUserZodSchema = zod_1.z.object({
     date_of_joining: zod_1.z.string({
         required_error: 'Date Of Joining is Required',
     }),
-    department: zod_1.z.enum(['HR', 'IT', 'Finance', 'Marketing', 'Sales', 'Operations'], { required_error: 'Department is Required' }),
     flat_number: zod_1.z.string().optional(),
     building_name: zod_1.z.string().optional(),
     street: zod_1.z.string().optional(),
@@ -30,38 +29,10 @@ const addUserZodSchema = zod_1.z.object({
     bank_name: zod_1.z.string({ required_error: 'Bank Name is Required' }),
     account_number: zod_1.z.string({ required_error: 'Account Number is Required' }),
     branch_name: zod_1.z.string().optional(),
-    designation: zod_1.z.enum([
-        'Software Engineer',
-        'Senior Software Engineer',
-        'Team Lead',
-        'Project Manager',
-        'Product Manager',
-        'CEO',
-        'CTO',
-        'COO',
-        'CFO',
-        'HR Manager',
-        'HR Executive',
-        'HR Intern',
-        'Marketing Manager',
-        'Marketing Executive',
-        'Marketing Intern',
-        'Sales Manager',
-        'Sales Executive',
-        'Sales Intern',
-        'Finance Manager',
-        'Finance Executive',
-        'Finance Intern',
-        'Operations Manager',
-        'Operations Executive',
-        'Operations Intern',
-    ], { required_error: 'Designation is Required' }),
-    team: zod_1.z.enum(['IT', 'Finance', 'Marketing', 'Sales', 'Operations'], {
-        required_error: 'Team is Required',
-    }),
-    role: zod_1.z.enum(['Employee', 'Manager', 'Developer', 'Designer', 'Tester'], {
-        required_error: 'Role is Required',
-    }),
+    designation: zod_1.z.string({ required_error: 'Designation is Required' }),
+    team: zod_1.z.string({ required_error: 'Team is Required' }),
+    role: zod_1.z.string({ required_error: 'Role is Required' }),
+    department: zod_1.z.string({ required_error: 'Department is Required' }),
     manager_id: zod_1.z.string({ required_error: 'ManagerId is Required' }),
     emergency_contact: zod_1.z.object({
         full_name: zod_1.z.string({
@@ -80,7 +51,7 @@ const addUserZodSchema = zod_1.z.object({
         .enum(['super_admin', 'admin', 'employee'])
         .default('employee')
         .optional(),
-    password: zod_1.z.string().default('Dino-123').optional(),
+    password: zod_1.z.string().optional(),
     salaryDetails: zod_1.z.object({
         basic_salary: zod_1.z.string({
             required_error: 'Basic Salary  is Required',
@@ -103,13 +74,17 @@ const updateUserZodSchema = zod_1.z.object({
     date_of_birth: zod_1.z.string().optional(),
     gender: zod_1.z.string().optional(),
     employment_status: zod_1.z
-        .enum(['Contract', 'Intern', 'Temporary', 'Part-time', 'Freelance', 'Full-time'])
+        .enum([
+        'Contract',
+        'Intern',
+        'Temporary',
+        'Part-time',
+        'Freelance',
+        'Full-time',
+    ])
         .optional(),
     office_email: zod_1.z.string().optional(),
     date_of_joining: zod_1.z.string().optional(),
-    department: zod_1.z
-        .enum(['HR', 'IT', 'Finance', 'Marketing', 'Sales', 'Operations'])
-        .optional(),
     flat_number: zod_1.z.string().optional(),
     building_name: zod_1.z.string().optional(),
     street: zod_1.z.string().optional(),
@@ -124,40 +99,10 @@ const updateUserZodSchema = zod_1.z.object({
     bank_name: zod_1.z.string().optional(),
     account_number: zod_1.z.string().optional(),
     branch_name: zod_1.z.string().optional(),
-    designation: zod_1.z
-        .enum([
-        'Software Engineer',
-        'Senior Software Engineer',
-        'Team Lead',
-        'Project Manager',
-        'Product Manager',
-        'CEO',
-        'CTO',
-        'COO',
-        'CFO',
-        'HR Manager',
-        'HR Executive',
-        'HR Intern',
-        'Marketing Manager',
-        'Marketing Executive',
-        'Marketing Intern',
-        'Sales Manager',
-        'Sales Executive',
-        'Sales Intern',
-        'Finance Manager',
-        'Finance Executive',
-        'Finance Intern',
-        'Operations Manager',
-        'Operations Executive',
-        'Operations Intern',
-    ])
-        .optional(),
-    team: zod_1.z
-        .enum(['IT', 'Finance', 'Marketing', 'Sales', 'Operations'])
-        .optional(),
-    role: zod_1.z
-        .enum(['Employee', 'Manager', 'Developer', 'Designer', 'Tester'])
-        .optional(),
+    designation: zod_1.z.string().optional(),
+    team: zod_1.z.string().optional(),
+    department: zod_1.z.string().optional(),
+    role: zod_1.z.string().optional(),
     manager_id: zod_1.z.string().optional(),
     emergency_contact: zod_1.z
         .object({
@@ -172,7 +117,7 @@ const updateUserZodSchema = zod_1.z.object({
         .enum(['super_admin', 'admin', 'employee'])
         .default('employee')
         .optional(),
-    password: zod_1.z.string().default('Dino-123').optional(),
+    password: zod_1.z.string().optional(),
     profile_picture: zod_1.z.string().optional(),
     status: zod_1.z
         .enum(['Deleted', 'Disabled', 'Active'])
@@ -188,7 +133,12 @@ const updateUserZodSchema = zod_1.z.object({
     })
         .optional(),
 });
+const disableUserZodSchema = zod_1.z.object({
+    id: zod_1.z.string(),
+    status: zod_1.z.enum(['Disabled', 'Active']),
+});
 exports.UserValidation = {
     addUserZodSchema,
     updateUserZodSchema,
+    disableUserZodSchema,
 };
