@@ -1,23 +1,15 @@
 import { attendance } from '../modules/attendance/attendance.model';
 import { Organization } from '../modules/organization/organization.model';
 
-const formatTime = (seconds: any) => {
-  const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
-  const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-  const remainingSeconds = String(seconds % 60).padStart(2, '0');
-  return `${hours}:${minutes}:${remainingSeconds}`;
-};
-
-export const updateDailyAttendance = async (utcTimeZone: string) => {
+export const updateDailyAttendance = async () => {
   try {
     const orgs = await Organization.find({
-      utc_offset: utcTimeZone,
       status: 'Active',
-    }).select(['_id', 'office_start_time', 'office_end_time']);
+    }).select(['_id', 'office_end_time']);
 
     for (const org of orgs) {
       const thisOrgAttendances = await attendance.find({
-        user_id: '65972575f7234cb7a2f1d02e',
+        // user_id: '65972575f7234cb7a2f1d02e',
         organization_id: org._id,
         date: new Date().toISOString().split('T')[0],
       });
@@ -79,7 +71,7 @@ export const updateDailyAttendance = async (utcTimeZone: string) => {
           });
         }
 
-        // Overtime calculation for activity logs after office end time
+        // Overtime calculation
         if (
           record.check_out &&
           new Date(record.check_out).getTime() >= officeEndTime.getTime()
@@ -90,20 +82,11 @@ export const updateDailyAttendance = async (utcTimeZone: string) => {
           });
 
           let lastOvertimeCheckIn: any = null;
-          let lastOvertimeCheckOut: any = null;
 
-          // Process overtime activities
           overtimeActivityLogs.forEach(activity => {
             const activityTime = new Date(activity.timestamp);
 
             if (activity.activity === 'check_in') {
-              if (lastOvertimeCheckOut) {
-                const diffMs =
-                  activityTime.getTime() - lastOvertimeCheckOut.getTime();
-                const diffSeconds = Math.floor(diffMs / 1000);
-                // totalBreak += diffSeconds; // If breaks are required, calculate break time
-                lastOvertimeCheckOut = null;
-              }
               lastOvertimeCheckIn = activityTime;
             } else if (
               activity.activity === 'check_out' &&
@@ -114,16 +97,9 @@ export const updateDailyAttendance = async (utcTimeZone: string) => {
               const diffSeconds = Math.floor(diffMs / 1000);
               totalOvertime += diffSeconds;
               lastOvertimeCheckIn = null;
-              lastOvertimeCheckOut = activityTime;
             }
           });
         }
-
-        // console.log(
-        //   'Total Production: ' + formatTime(totalProduction),
-        //   'Total Overtime: ' + formatTime(totalOvertime),
-        //   'Total Break: ' + formatTime(totalBreak)
-        // );
 
         // Update record
         await attendance.updateOne(
@@ -141,3 +117,44 @@ export const updateDailyAttendance = async (utcTimeZone: string) => {
     console.error('Error updating Attendance:', error);
   }
 };
+
+/* Later use */
+// const formatTime = (seconds: any) => {
+//   const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
+//   const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+//   const remainingSeconds = String(seconds % 60).padStart(2, '0');
+//   return `${hours}:${minutes}:${remainingSeconds}`;
+// };
+
+// console.log(
+//   'Total Production: ' + formatTime(totalProduction),
+//   'Total Overtime: ' + formatTime(totalOvertime),
+//   'Total Break: ' + formatTime(totalBreak)
+// );
+
+// Process overtime activities
+// let lastOvertimeCheckIn: any = null;
+// let lastOvertimeCheckOut: any = null;
+// overtimeActivityLogs.forEach(activity => {
+//   const activityTime = new Date(activity.timestamp);
+//   if (activity.activity === 'check_in') {
+//     if (lastOvertimeCheckOut) {
+//       const diffMs =
+//         activityTime.getTime() - lastOvertimeCheckOut.getTime();
+//       const diffSeconds = Math.floor(diffMs / 1000);
+//       // totalBreak += diffSeconds; // If breaks are required, calculate break time
+//       lastOvertimeCheckOut = null;
+//     }
+//     lastOvertimeCheckIn = activityTime;
+//   } else if (
+//     activity.activity === 'check_out' &&
+//     lastOvertimeCheckIn
+//   ) {
+//     const diffMs =
+//       activityTime.getTime() - lastOvertimeCheckIn.getTime();
+//     const diffSeconds = Math.floor(diffMs / 1000);
+//     totalOvertime += diffSeconds;
+//     lastOvertimeCheckIn = null;
+//     lastOvertimeCheckOut = activityTime;
+//   }
+// });
