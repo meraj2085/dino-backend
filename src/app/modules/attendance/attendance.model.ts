@@ -10,11 +10,7 @@ const attendanceSchema = new Schema<IAttendance>(
       required: true,
       default: () => new Date().toISOString().split('T')[0],
     },
-    check_in: {
-      type: String,
-      required: true,
-      default: new Date().toISOString(),
-    },
+    check_in: { type: String },
     check_out: { type: String },
     activity_logs: {
       type: [

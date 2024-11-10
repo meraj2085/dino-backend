@@ -36,10 +36,11 @@ const addAttendance = async (
 
   if (!userAttendance) {
     if (data.action === 'check_in') {
-      data.check_in = new Date().toISOString();
+      const currentTimestamp = new Date().toISOString();
+      data.check_in = currentTimestamp;
       data.activity_logs.push({
         activity: 'check_in',
-        timestamp: new Date().toISOString(),
+        timestamp: currentTimestamp,
       });
       data.organization_id = organization_id;
       data.date = todayDate;
