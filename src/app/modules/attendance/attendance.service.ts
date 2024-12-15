@@ -115,52 +115,74 @@ const getAllAttendance = async (
   paginationOptions: IPaginationOptions,
   organization_id: string
 ) => {
-  const { searchTerm, ...filtersData } = filters;
-  const { page, limit, skip, sortBy, sortOrder } =
+  const { monthYear, searchTerm } = filters;
+  if (!monthYear || !organization_id) {
+    throw new Error('monthYear and organization_id are required');
+  }
+
+  const { page, limit, skip } =
     paginationHelpers.calculatePagination(paginationOptions);
 
-  const andConditions = [];
+  const [year, month] = monthYear.split('-').map(Number);
+
+  const startDate = new Date(Date.UTC(year, month - 1, 1));
+  const endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
+
+  const userQuery: any = { organization_id };
   if (searchTerm) {
-    andConditions.push({
-      $or: attendanceFilterableFields.map(field => ({
-        [field]: {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      })),
-    });
+    userQuery.$or = [
+      { first_name: { $regex: searchTerm, $options: 'i' } },
+      { last_name: { $regex: searchTerm, $options: 'i' } },
+    ];
   }
 
-  if (Object.keys(filtersData).length) {
-    andConditions.push({
-      $and: Object.entries(filtersData).map(([field, value]) => ({
-        [field]: value,
-      })),
-    });
-  }
+  const users = await User.find(userQuery)
+    .select('_id first_name last_name')
+    .lean();
 
-  const sortConditions: { [key: string]: SortOrder } = {};
-  if (sortBy && sortOrder) {
-    sortConditions[sortBy] = sortOrder;
-  }
-
-  andConditions.push({
+  const attendanceRecords = await attendance.find({
     organization_id,
-    user_type: {
-      $ne: 'super_admin',
+    date: {
+      $gte: startDate.toISOString(),
+      $lte: endDate.toISOString(),
     },
   });
 
-  const whereConditions =
-    andConditions.length > 0 ? { $and: andConditions } : {};
+  const attendanceMap: { [key: string]: { [key: string]: IAttendance } } = {};
+  attendanceRecords.forEach(record => {
+    if (!attendanceMap[record.user_id]) {
+      attendanceMap[record.user_id] = {};
+    }
+    attendanceMap[record.user_id][record.date] = record;
+  });
 
-  const result = await attendance
-    .find(whereConditions)
-    .sort(sortConditions)
-    .skip(skip)
-    .limit(limit);
+  const daysInMonth = new Date(year, month, 0).getDate();
 
-  const total = await attendance.countDocuments(whereConditions);
+  const result = users.map(user => {
+    const { first_name, last_name, _id: user_id } = user;
+
+    const data = Array.from({ length: daysInMonth }, (_, dayIndex) => {
+      const date = new Date(Date.UTC(year, month - 1, dayIndex + 1));
+      const formattedDate = date.toISOString().split('T')[0];
+
+      const attendance =
+        attendanceMap[user_id.toString()]?.[formattedDate] || null;
+
+      return {
+        date: formattedDate,
+        attendance: !!attendance,
+        production_time: attendance?.production || 0,
+      };
+    });
+
+    return {
+      user_id,
+      name: `${first_name} ${last_name}`,
+      data,
+    };
+  });
+
+  const total = result.length;
 
   return {
     meta: {
@@ -168,7 +190,7 @@ const getAllAttendance = async (
       limit,
       total,
     },
-    data: result,
+    data: result.slice(skip, skip + limit),
   };
 };
 
