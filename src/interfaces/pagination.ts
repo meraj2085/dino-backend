@@ -3,4 +3,5 @@ export type IPaginationOptions = {
   limit?: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+  monthYear?: string;
 };

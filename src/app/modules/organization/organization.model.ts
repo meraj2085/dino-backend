@@ -60,6 +60,10 @@ const OrganizationSchema = new Schema<IOrganization, OrganizationModel>(
       type: Boolean,
       default: false,
     },
+    utc_offset: {
+      type: String,
+      default: '+06:00',
+    },
     status: {
       type: String,
       enum: ['Deleted', 'Disabled', 'Active'],
