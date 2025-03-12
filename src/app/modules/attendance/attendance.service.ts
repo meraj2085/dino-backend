@@ -7,6 +7,11 @@ import { User } from '../user/user.model';
 import { attendanceFilterableFields } from './attendance.constant';
 import { IAttendance, IAttendanceFilters } from './attendance.interface';
 import { attendance } from './attendance.model';
+import {
+  calculateTotalWorkingHours,
+  formatSecondToTime,
+} from '../../../utils/common';
+import { Organization } from '../organization/organization.model';
 
 const addAttendance = async (
   data: IAttendance,
@@ -275,13 +280,66 @@ const myAttendance = async (
 
     const total = await attendance.countDocuments(whereConditions);
 
+    // Calculate total week, month and overtime working hours
+    const wholeMonthAttendance = await attendance
+      .find({
+        user_id: userId,
+        organization_id,
+        date: {
+          $gte: startOfMonth.toISOString(),
+          $lt: endOfMonth.toISOString(),
+        },
+      })
+      .select(['production', 'overtime', 'date', '-_id']);
+
+    let thisWeekProduction = 0;
+    let thisMonthProduction = 0;
+    let thisMonthOvertime = 0;
+
+    const startOfWeek = new Date();
+    startOfWeek.setHours(0, 0, 0, 0);
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1);
+
+    wholeMonthAttendance.forEach(record => {
+      const attendanceDate = record.date ? new Date(record.date) : null;
+
+      if (!attendanceDate) return;
+
+      thisMonthProduction += record.production || 0;
+      thisMonthOvertime += record.overtime || 0;
+
+      if (attendanceDate >= startOfWeek) {
+        thisWeekProduction += record.production || 0;
+      }
+    });
+
+    // Calculate company working hours and days
+    const org_details = await Organization.findOne({
+      _id: organization_id,
+    }).select(['-_id', 'office_start_time', 'office_end_time', 'working_days']);
+
+    const totalWorkingHours = calculateTotalWorkingHours(
+      org_details?.office_start_time || '09:00',
+      org_details?.office_end_time || '17:00'
+    );
+
+    const totalWorkingDaysNumber = org_details?.working_days?.length || 5;
+console.log('totalWorkingDaysNumber', totalWorkingDaysNumber);
+    const stats = {
+      thisWeekProduction: formatSecondToTime(thisWeekProduction, true),
+      thisMonthProduction: formatSecondToTime(thisMonthProduction, true),
+      thisMonthOvertime: formatSecondToTime(thisMonthOvertime, true),
+      totalWorkingHours,
+      totalWorkingDaysNumber,
+    };
+
     return {
       meta: {
         page,
         limit,
         total,
       },
-      data: myAttendanceData,
+      data: { myAttendanceData, stats },
     };
   } catch (error) {
     console.log(error);
