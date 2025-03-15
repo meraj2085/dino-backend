@@ -11,6 +11,7 @@ import { UserRoutes } from '../modules/user/user.route';
 import { LeaveRoutes } from '../modules/leave/Leave.route';
 import { OtpRoutes } from '../modules/otp/otp.route';
 import { StatisticsRoutes } from '../modules/statistics/statistics.route';
+import { ReportRoutes } from '../modules/report/report.route';
 const router = express.Router();
 
 const moduleRoutes = [
@@ -61,6 +62,10 @@ const moduleRoutes = [
   {
     path: '/statistics',
     route: StatisticsRoutes ,
+  },
+  {
+    path: '/report',
+    route: ReportRoutes ,
   },
 ];
 
